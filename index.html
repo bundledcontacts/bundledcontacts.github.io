@@ -3,24 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="description"
-        content="Deformable Neural Radiance Fields creates free-viewpoint portraits (nerfies) from casually captured videos.">
-  <meta name="keywords" content="Nerfies, D-NeRF, NeRF">
+        content="Bundled Contact Gradients (BCG): a contact-local randomized smoothing framework that stabilizes first-order policy optimization in differentiable simulation under stiff, deployable contact.">
+  <meta name="keywords" content="Differentiable Simulation, Randomized Smoothing, Contact Gradients, Humanoid, Sim-to-Real, First-Order Policy Optimization, SHAC">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nerfies: Deformable Neural Radiance Fields</title>
-
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-
-    gtag('js', new Date());
-
-    gtag('config', 'G-PYVRSFMDRL');
-  </script>
+  <title>Bundled Contact Gradients</title>
 
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
         rel="stylesheet">
@@ -28,7 +14,8 @@
   <link rel="stylesheet" href="./static/css/bulma.min.css">
   <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
   <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
-  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <!-- Font Awesome is loaded as the SVG-with-JS build below; the CSS build is
+       omitted because its webfont files are not vendored in this repo. -->
   <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <link rel="stylesheet" href="./static/css/index.css">
@@ -39,135 +26,108 @@
   <script src="./static/js/bulma-carousel.min.js"></script>
   <script src="./static/js/bulma-slider.min.js"></script>
   <script src="./static/js/index.js"></script>
+
+  <!-- Math rendering -->
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']}
+    };
+  </script>
+  <script defer id="MathJax-script"
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 
-<nav class="navbar" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
-    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
-  </div>
-  <div class="navbar-menu">
-    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
-      <a class="navbar-item" href="https://keunhong.com">
-      <span class="icon">
-          <i class="fas fa-home"></i>
-      </span>
-      </a>
+<!--
+  ============================================================================
+  MEDIA PLACEHOLDERS
+  ----------------------------------------------------------------------------
+  Every <div class="media-placeholder"> below marks a slot for a final video or
+  image. The <code> inside it names the file that belongs there.
 
-      <div class="navbar-item has-dropdown is-hoverable">
-        <a class="navbar-link">
-          More Research
-        </a>
-        <div class="navbar-dropdown">
-          <a class="navbar-item" href="https://hypernerf.github.io">
-            HyperNeRF
-          </a>
-          <a class="navbar-item" href="https://nerfies.github.io">
-            Nerfies
-          </a>
-          <a class="navbar-item" href="https://latentfusion.github.io">
-            LatentFusion
-          </a>
-          <a class="navbar-item" href="https://photoshape.github.io">
-            PhotoShape
-          </a>
-        </div>
-      </div>
-    </div>
+  To go live, replace the whole placeholder div with either
 
-  </div>
-</nav>
+    <video class="result-media" autoplay muted loop playsinline preload="metadata"
+           poster="./static/images/NAME_poster.jpg">
+      <source src="./static/videos/NAME.mp4" type="video/mp4">
+    </video>
 
+  or, for a figure exported from the paper,
+
+    <img class="result-media" src="./static/images/NAME.png" alt="...">
+
+  Numbers marked <span class="tbd">TBD</span> still need to be filled in.
+  ============================================================================
+-->
 
 <section class="hero">
   <div class="hero-body">
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <h1 class="title is-1 publication-title">Nerfies: Deformable Neural Radiance Fields</h1>
-          <div class="is-size-5 publication-authors">
-            <span class="author-block">
-              <a href="https://keunhong.com">Keunhong Park</a><sup>1</sup>,</span>
-            <span class="author-block">
-              <a href="https://utkarshsinha.com">Utkarsh Sinha</a><sup>2</sup>,</span>
-            <span class="author-block">
-              <a href="https://jonbarron.info">Jonathan T. Barron</a><sup>2</sup>,
-            </span>
-            <span class="author-block">
-              <a href="http://sofienbouaziz.com">Sofien Bouaziz</a><sup>2</sup>,
-            </span>
-            <span class="author-block">
-              <a href="https://www.danbgoldman.com">Dan B Goldman</a><sup>2</sup>,
-            </span>
-            <span class="author-block">
-              <a href="https://homes.cs.washington.edu/~seitz/">Steven M. Seitz</a><sup>1,2</sup>,
-            </span>
-            <span class="author-block">
-              <a href="http://www.ricardomartinbrualla.com">Ricardo Martin-Brualla</a><sup>2</sup>
-            </span>
-          </div>
+          <h1 class="title is-1 publication-title">Bundled Contact Gradients</h1>
+          <h2 class="subtitle is-4 publication-subtitle">
+            Stabilizing Differentiable Simulation for Deployable Dynamic Tasks
+          </h2>
 
           <div class="is-size-5 publication-authors">
-            <span class="author-block"><sup>1</sup>University of Washington,</span>
-            <span class="author-block"><sup>2</sup>Google Research</span>
+            <span class="author-block">Anonymous Authors</span>
+          </div>
+
+          <div class="is-size-6 publication-venue-line">
+            <span class="publication-venue">Under review</span>
+            <span class="anon-note">Author information withheld for double-blind review</span>
           </div>
 
           <div class="column has-text-centered">
             <div class="publication-links">
-              <!-- PDF Link. -->
+              <!-- PDF Link. The paper is not hosted here while it is under review.
+                   To enable: drop the anonymized PDF at
+                   ./static/pdfs/bundled_contact_gradients.pdf and replace the <a> below with
+                     <a href="./static/pdfs/bundled_contact_gradients.pdf"
+                        class="external-link button is-normal is-rounded is-dark">
+                   (and drop the "is-disabled" class and the "(soon)" suffix). -->
               <span class="link-block">
-                <a href="https://arxiv.org/pdf/2011.12948"
-                   class="external-link button is-normal is-rounded is-dark">
+                <a class="external-link button is-normal is-rounded is-dark is-disabled"
+                   title="Available after review" aria-disabled="true">
                   <span class="icon">
                       <i class="fas fa-file-pdf"></i>
                   </span>
-                  <span>Paper</span>
+                  <span>Paper (soon)</span>
                 </a>
               </span>
+              <!-- arXiv Link. -->
               <span class="link-block">
-                <a href="https://arxiv.org/abs/2011.12948"
-                   class="external-link button is-normal is-rounded is-dark">
+                <a class="external-link button is-normal is-rounded is-dark is-disabled"
+                   title="Available after review" aria-disabled="true">
                   <span class="icon">
                       <i class="ai ai-arxiv"></i>
                   </span>
-                  <span>arXiv</span>
+                  <span>arXiv (soon)</span>
                 </a>
               </span>
               <!-- Video Link. -->
               <span class="link-block">
-                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
+                <a href="#supplementary-video"
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
-                      <i class="fab fa-youtube"></i>
+                      <i class="fas fa-play"></i>
                   </span>
                   <span>Video</span>
                 </a>
               </span>
               <!-- Code Link. -->
               <span class="link-block">
-                <a href="https://github.com/google/nerfies"
-                   class="external-link button is-normal is-rounded is-dark">
+                <a class="external-link button is-normal is-rounded is-dark is-disabled"
+                   title="Released after review" aria-disabled="true">
                   <span class="icon">
                       <i class="fab fa-github"></i>
                   </span>
-                  <span>Code</span>
-                  </a>
+                  <span>Code (soon)</span>
+                </a>
               </span>
-              <!-- Dataset Link. -->
-              <span class="link-block">
-                <a href="https://github.com/google/nerfies/releases/tag/0.1"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="far fa-images"></i>
-                  </span>
-                  <span>Data</span>
-                  </a>
             </div>
-
           </div>
         </div>
       </div>
@@ -175,280 +135,612 @@
   </div>
 </section>
 
+
 <section class="hero teaser">
   <div class="container is-max-desktop">
     <div class="hero-body">
-      <video id="teaser" autoplay muted loop playsinline height="100%">
-        <source src="./static/videos/teaser.mp4"
-                type="video/mp4">
-      </video>
+      <!-- TEASER: montage of the four motions on the real Unitree G1. -->
+      <div class="media-placeholder is-16by9">
+        <span class="ph-icon"><i class="fas fa-film"></i></span>
+        <span class="ph-title">Teaser &mdash; hardware montage (Run &middot; Jump &middot; Fight &middot; Dance)</span>
+        <code class="ph-path">static/videos/teaser.mp4</code>
+      </div>
       <h2 class="subtitle has-text-centered">
-        <span class="dnerf">Nerfies</span> turns selfie videos from your phone into
-        free-viewpoint
-        portraits.
+        <span class="bcg">BCG</span> keeps first-order policy gradients usable at
+        <i>stiff, deployable</i> contact &mdash; so dynamic humanoid motions learned in
+        differentiable simulation transfer <b>zero-shot</b> to a real Unitree G1.
       </h2>
     </div>
   </div>
 </section>
 
 
-<section class="hero is-light is-small">
-  <div class="hero-body">
-    <div class="container">
-      <div id="results-carousel" class="carousel results-carousel">
-        <div class="item item-steve">
-          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/steve.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-chair-tp">
-          <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/chair-tp.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-shiba">
-          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/shiba.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-fullbody">
-          <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/fullbody.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-blueshirt">
-          <video poster="" id="blueshirt" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/blueshirt.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-mask">
-          <video poster="" id="mask" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/mask.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-coffee">
-          <video poster="" id="coffee" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/coffee.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-toby">
-          <video poster="" id="toby" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/toby2.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-
+<!-- Abstract. -->
 <section class="section">
   <div class="container is-max-desktop">
-    <!-- Abstract. -->
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-            We present the first method capable of photorealistically reconstructing a non-rigidly
-            deforming scene using photos/videos captured casually from mobile phones.
+            Differentiable simulation provides analytic gradients of robot dynamics, enabling fast
+            and sample-efficient first-order policy optimization. However, obtaining smooth and
+            informative gradients through rigid-body contact typically requires softened contact
+            models, often at the expense of physical fidelity and thereby limiting learned policies
+            largely to simulation. This trade-off becomes particularly consequential for dynamic
+            humanoid motions, where accurate contact dynamics are critical for transferring policies
+            to the real world.
           </p>
           <p>
-            Our approach augments neural radiance fields
-            (NeRF) by optimizing an
-            additional continuous volumetric deformation field that warps each observed point into a
-            canonical 5D NeRF.
-            We observe that these NeRF-like deformation fields are prone to local minima, and
-            propose a coarse-to-fine optimization method for coordinate-based models that allows for
-            more robust optimization.
-            By adapting principles from geometry processing and physical simulation to NeRF-like
-            models, we propose an elastic regularization of the deformation field that further
-            improves robustness.
+            Increasing contact stiffness in rigid-body simulation improves the fidelity of
+            interactions, but also makes the dynamics increasingly sensitive to small state
+            perturbations, producing high-variance gradients that can destabilize first-order policy
+            learning. To address this, we propose <i>Bundled Contact Gradients (BCG)</i>, a
+            contact-local randomized smoothing framework for differentiable policy learning. When
+            stiff contact is detected, our method evaluates a local bundle of randomized perturbation
+            rollouts around the stiff contact configuration and aggregates their gradient signal
+            thereby reducing gradient variance.
           </p>
           <p>
-            We show that <span class="dnerf">Nerfies</span> can turn casually captured selfie
-            photos/videos into deformable NeRF
-            models that allow for photorealistic renderings of the subject from arbitrary
-            viewpoints, which we dub <i>"nerfies"</i>. We evaluate our method by collecting data
-            using a
-            rig with two mobile phones that take time-synchronized photos, yielding train/validation
-            images of the same pose at different viewpoints. We show that our method faithfully
-            reconstructs non-rigidly deforming scenes and reproduces unseen views with high
-            fidelity.
+            We demonstrate the effectiveness of our method by successfully training and transferring
+            dynamic motions zero-shot onto a real-world Unitree G1 humanoid platform.
           </p>
         </div>
       </div>
     </div>
-    <!--/ Abstract. -->
+  </div>
+</section>
+<!--/ Abstract. -->
 
-    <!-- Paper video. -->
+
+<!-- Supplementary video. -->
+<section class="section pt-0" id="supplementary-video">
+  <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
         <h2 class="title is-3">Video</h2>
-        <div class="publication-video">
-          <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
-                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <div class="media-placeholder is-16by9">
+          <span class="ph-icon"><i class="fas fa-video"></i></span>
+          <span class="ph-title">Supplementary video (method walkthrough + results)</span>
+          <code class="ph-path">static/videos/supplementary.mp4</code>
         </div>
       </div>
     </div>
-    <!--/ Paper video. -->
   </div>
 </section>
+<!--/ Supplementary video. -->
 
 
+<!-- Method. -->
+<section class="section pt-0">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">How Bundled Contact Gradients work</h2>
+
+        <div class="content has-text-justified">
+          <p>
+            Stiff contact is what makes a policy deployable &mdash; and what makes its gradient
+            unreliable. At a stiff contact event the derivative of a single trajectory is highly
+            sensitive to small perturbations of the contact configuration, so nearby rollouts
+            disagree sharply about which direction improves the return. BCG keeps the
+            <i>forward</i> dynamics stiff and repairs only the <i>backward</i> pass, by averaging
+            sensitivities over a small bundle of nearby contact configurations.
+          </p>
+          <p>
+            Crucially, the smoothing is <b>local</b>: bundling is triggered only when a contact
+            normal impulse exceeds a detection threshold \(\tau\), and the branches are advanced in
+            parallel on the GPU. The overhead is therefore limited and incurred exactly where the
+            first-order gradient is most fragile.
+          </p>
+        </div>
+
+        <!-- FIGURE: paper Fig. 2 (BCG inside a SHAC-style loop with ADD). -->
+        <div class="media-placeholder is-wide">
+          <span class="ph-icon"><i class="fas fa-project-diagram"></i></span>
+          <span class="ph-title">Method overview &mdash; BCG inside a SHAC-style loop with ADD (paper Fig. 2)</span>
+          <code class="ph-path">static/images/method_overview.png</code>
+        </div>
+        <p class="caption">
+          Policy learning with BCG. The policy drives parallel rollouts. At stiff contact,
+          \(B\) perturbed branches advance for \(H\) steps under shared policy actions and are
+          averaged to continue the rollout. ADD compares simulated and reference motion features to
+          provide imitation rewards, whose gradients propagate through the dynamics to update the
+          policy.
+        </p>
+
+        <div class="columns is-centered mt-5 method-steps">
+          <div class="column">
+            <div class="step-card">
+              <span class="step-index">1</span>
+              <h3 class="title is-5">Contact-local perturbation</h3>
+              <p>
+                When the set of contacts whose normal impulse exceeds \(\tau\) is non-empty, we
+                perturb the contacting kinematic chain in <i>Cartesian</i> space, so the
+                perturbation scale has a direct physical meaning, and map the offsets back to joint
+                space through the damped pseudoinverse of the Jacobian \(J_k\):
+              </p>
+              <p class="eq">
+                \[\begin{aligned}
+                   \Delta p^{(i)} &\sim \mathcal{N}(0,\sigma_p^2 I),\\[1pt]
+                   \Delta v^{(i)} &\sim \mathcal{N}(0,\sigma_v^2 I),\\[1pt]
+                   \Delta q^{(i)} &= J_k^{\dagger}\Delta p^{(i)},\\[1pt]
+                   \Delta \dot q^{(i)} &= J_k^{\dagger}\Delta v^{(i)}.
+                   \end{aligned}\]
+              </p>
+              <p>
+                Each offset is treated as a constant in the backward pass, so no gradient flows
+                through the sampling itself.
+              </p>
+            </div>
+          </div>
+          <div class="column">
+            <div class="step-card">
+              <span class="step-index">2</span>
+              <h3 class="title is-5">Multi-step bundled rollout</h3>
+              <p>
+                The \(B\) perturbed branches evolve for \(H\) control steps under
+                <i>shared</i> actions, then are aggregated back into a single representative state
+                that continues the nominal rollout:
+              </p>
+              <p class="eq">
+                \[\begin{aligned}
+                   x^{(i)}_{t+1} &= f_\kappa\!\left(x^{(i)}_t, a_t\right),\\[2pt]
+                   \bar{x}_{t+1} &= \mathcal{A}\!\left(x^{(1)}_{t+1},\dots,x^{(B)}_{t+1}\right).
+                   \end{aligned}\]
+              </p>
+              <p>
+                Even \(H=1\) already allows \(S\) physics substeps of branch evolution before the
+                average supplies the reward and the next action. The forward rollout therefore stays
+                stiff and deployable.
+              </p>
+            </div>
+          </div>
+          <div class="column">
+            <div class="step-card">
+              <span class="step-index">3</span>
+              <h3 class="title is-5">Gradient propagation</h3>
+              <p>
+                Because the aggregation is an arithmetic mean over branches, the state sensitivity
+                that leaves the bundle is an <i>average</i> of per-branch sensitivities:
+              </p>
+              <p class="eq">
+                \[\bar{Z}_{t+1} = \frac{1}{B}\sum_{i=1}^{B}
+                  \left(F_{x,t}Z^{(i)}_t + F_{a,t}U_t\right).\]
+              </p>
+              <p>
+                This attenuates sharp, contact-dependent variations by combining sensitivities from
+                nearby trajectories, while the shared action sensitivity \(U_t\) retains the
+                policy's feedback through all \(H\cdot S\) simulation substeps.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="content has-text-justified mt-4">
+          <p>
+            The underlying simulator uses the analytically smoothed compliant contact model of
+            Schwarke et al., in which contact impulses are scaled by penetration depth \(d\) through
+            \(s_\kappa(d) = \bigl(1+\exp(-\kappa d)\bigr)^{-1}\). Larger \(\kappa\) approaches the
+            hard-contact response and raises physical fidelity; throughout this work
+            <i>stiff contact</i> means a large but finite \(\kappa\), which keeps the dynamics
+            differentiable while BCG handles the variance it creates. We implement BCG in NVIDIA
+            Warp and train with a SHAC-style actor&ndash;critic, using Adversarial Differential
+            Discriminators (ADD) for the motion-imitation reward.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ Method. -->
+
+
+<!-- Qualitative results. -->
+<section class="section is-light-section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Learned motions in simulation</h2>
+    <div class="content has-text-justified">
+      <p>
+        We train policies to imitate four dynamic, contact-rich motions from the LAFAN1 dataset
+        &mdash; <b>Run</b>, <b>Jump</b>, <b>Fight</b> and <b>Dance</b>, each lasting 15&nbsp;s
+        &mdash; on the Unitree G1 humanoid at deployable contact stiffness.
+      </p>
+    </div>
+
+    <div class="columns is-multiline">
+      <div class="column is-half">
+        <div class="media-placeholder is-16by9">
+          <span class="ph-icon"><i class="fas fa-film"></i></span>
+          <span class="ph-title">Run &mdash; simulation</span>
+          <code class="ph-path">static/videos/sim_run.mp4</code>
+        </div>
+        <p class="caption">Run</p>
+      </div>
+      <div class="column is-half">
+        <div class="media-placeholder is-16by9">
+          <span class="ph-icon"><i class="fas fa-film"></i></span>
+          <span class="ph-title">Jump &mdash; simulation</span>
+          <code class="ph-path">static/videos/sim_jump.mp4</code>
+        </div>
+        <p class="caption">Jump</p>
+      </div>
+      <div class="column is-half">
+        <div class="media-placeholder is-16by9">
+          <span class="ph-icon"><i class="fas fa-film"></i></span>
+          <span class="ph-title">Fight &mdash; simulation</span>
+          <code class="ph-path">static/videos/sim_fight.mp4</code>
+        </div>
+        <p class="caption">Fight</p>
+      </div>
+      <div class="column is-half">
+        <div class="media-placeholder is-16by9">
+          <span class="ph-icon"><i class="fas fa-film"></i></span>
+          <span class="ph-title">Dance &mdash; simulation</span>
+          <code class="ph-path">static/videos/sim_dance.mp4</code>
+        </div>
+        <p class="caption">Dance</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ Qualitative results. -->
+
+
+<!-- Sim-to-real. -->
 <section class="section">
   <div class="container is-max-desktop">
+    <h2 class="title is-3">Zero-shot sim-to-real transfer</h2>
+    <div class="content has-text-justified">
+      <p>
+        We deploy the learned SHAC+BCG policies zero-shot on the real Unitree G1, without any
+        hardware fine-tuning. The robot successfully executes the learned dynamic motions,
+        providing qualitative evidence that the stiff-contact policies transfer beyond simulation.
+      </p>
+    </div>
 
-    <div class="columns is-centered">
-
-      <!-- Visual Effects. -->
-      <div class="column">
-        <div class="content">
-          <h2 class="title is-3">Visual Effects</h2>
-          <p>
-            Using <i>nerfies</i> you can create fun visual effects. This Dolly zoom effect
-            would be impossible without nerfies since it would require going through a wall.
-          </p>
-          <video id="dollyzoom" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/dollyzoom-stacked.mp4"
-                    type="video/mp4">
-          </video>
+    <div class="columns is-multiline">
+      <div class="column is-half">
+        <div class="media-placeholder is-16by9">
+          <span class="ph-icon"><i class="fas fa-robot"></i></span>
+          <span class="ph-title">Run &mdash; hardware (Unitree G1)</span>
+          <code class="ph-path">static/videos/real_run.mp4</code>
         </div>
+        <p class="caption">Run &mdash; hardware</p>
       </div>
-      <!--/ Visual Effects. -->
-
-      <!-- Matting. -->
-      <div class="column">
-        <h2 class="title is-3">Matting</h2>
-        <div class="columns is-centered">
-          <div class="column content">
-            <p>
-              As a byproduct of our method, we can also solve the matting problem by ignoring
-              samples that fall outside of a bounding box during rendering.
-            </p>
-            <video id="matting-video" controls playsinline height="100%">
-              <source src="./static/videos/matting.mp4"
-                      type="video/mp4">
-            </video>
-          </div>
-
+      <div class="column is-half">
+        <div class="media-placeholder is-16by9">
+          <span class="ph-icon"><i class="fas fa-robot"></i></span>
+          <span class="ph-title">Jump &mdash; hardware (Unitree G1)</span>
+          <code class="ph-path">static/videos/real_jump.mp4</code>
         </div>
+        <p class="caption">Jump &mdash; hardware</p>
+      </div>
+      <div class="column is-half">
+        <div class="media-placeholder is-16by9">
+          <span class="ph-icon"><i class="fas fa-robot"></i></span>
+          <span class="ph-title">Fight &mdash; hardware (Unitree G1)</span>
+          <code class="ph-path">static/videos/real_fight.mp4</code>
+        </div>
+        <p class="caption">Fight &mdash; hardware</p>
+      </div>
+      <div class="column is-half">
+        <div class="media-placeholder is-16by9">
+          <span class="ph-icon"><i class="fas fa-robot"></i></span>
+          <span class="ph-title">Dance &mdash; hardware (Unitree G1)</span>
+          <code class="ph-path">static/videos/real_dance.mp4</code>
+        </div>
+        <p class="caption">Dance &mdash; hardware</p>
       </div>
     </div>
-    <!--/ Matting. -->
-
-    <!-- Animation. -->
-    <div class="columns is-centered">
-      <div class="column is-full-width">
-        <h2 class="title is-3">Animation</h2>
-
-        <!-- Interpolating. -->
-        <h3 class="title is-4">Interpolating states</h3>
-        <div class="content has-text-justified">
-          <p>
-            We can also animate the scene by interpolating the deformation latent codes of two input
-            frames. Use the slider here to linearly interpolate between the left frame and the right
-            frame.
-          </p>
-        </div>
-        <div class="columns is-vcentered interpolation-panel">
-          <div class="column is-3 has-text-centered">
-            <img src="./static/images/interpolate_start.jpg"
-                 class="interpolation-image"
-                 alt="Interpolate start reference image."/>
-            <p>Start Frame</p>
-          </div>
-          <div class="column interpolation-video-column">
-            <div id="interpolation-image-wrapper">
-              Loading...
-            </div>
-            <input class="slider is-fullwidth is-large is-info"
-                   id="interpolation-slider"
-                   step="1" min="0" max="100" value="0" type="range">
-          </div>
-          <div class="column is-3 has-text-centered">
-            <img src="./static/images/interpolate_end.jpg"
-                 class="interpolation-image"
-                 alt="Interpolation end reference image."/>
-            <p class="is-bold">End Frame</p>
-          </div>
-        </div>
-        <br/>
-        <!--/ Interpolating. -->
-
-        <!-- Re-rendering. -->
-        <h3 class="title is-4">Re-rendering the input video</h3>
-        <div class="content has-text-justified">
-          <p>
-            Using <span class="dnerf">Nerfies</span>, you can re-render a video from a novel
-            viewpoint such as a stabilized camera by playing back the training deformations.
-          </p>
-        </div>
-        <div class="content has-text-centered">
-          <video id="replay-video"
-                 controls
-                 muted
-                 preload
-                 playsinline
-                 width="75%">
-            <source src="./static/videos/replay.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <!--/ Re-rendering. -->
-
-      </div>
-    </div>
-    <!--/ Animation. -->
-
-
-    <!-- Concurrent Work. -->
-    <div class="columns is-centered">
-      <div class="column is-full-width">
-        <h2 class="title is-3">Related Links</h2>
-
-        <div class="content has-text-justified">
-          <p>
-            There's a lot of excellent work that was introduced around the same time as ours.
-          </p>
-          <p>
-            <a href="https://arxiv.org/abs/2104.09125">Progressive Encoding for Neural Optimization</a> introduces an idea similar to our windowed position encoding for coarse-to-fine optimization.
-          </p>
-          <p>
-            <a href="https://www.albertpumarola.com/research/D-NeRF/index.html">D-NeRF</a> and <a href="https://gvv.mpi-inf.mpg.de/projects/nonrigid_nerf/">NR-NeRF</a>
-            both use deformation fields to model non-rigid scenes.
-          </p>
-          <p>
-            Some works model videos with a NeRF by directly modulating the density, such as <a href="https://video-nerf.github.io/">Video-NeRF</a>, <a href="https://www.cs.cornell.edu/~zl548/NSFF/">NSFF</a>, and <a href="https://neural-3d-video.github.io/">DyNeRF</a>
-          </p>
-          <p>
-            There are probably many more by the time you are reading this. Check out <a href="https://dellaert.github.io/NeRF/">Frank Dellart's survey on recent NeRF papers</a>, and <a href="https://github.com/yenchenlin/awesome-NeRF">Yen-Chen Lin's curated list of NeRF papers</a>.
-          </p>
-        </div>
-      </div>
-    </div>
-    <!--/ Concurrent Work. -->
-
   </div>
 </section>
+<!--/ Sim-to-real. -->
+
+
+<!-- Comparisons. -->
+<section class="section is-light-section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Comparisons</h2>
+    <div class="content has-text-justified">
+      <p>
+        Side-by-side rollouts after transfer to MuJoCo. Vanilla SHAC stalls at low reward under
+        stiff contact, while PPO &mdash; despite an order of magnitude more environment samples
+        &mdash; tracks the reference less faithfully, for instance keeping both feet on the ground
+        instead of reproducing the jumping motion.
+      </p>
+    </div>
+
+    <div class="columns is-multiline">
+      <div class="column is-one-third">
+        <div class="media-placeholder is-4by3">
+          <span class="ph-icon"><i class="fas fa-film"></i></span>
+          <span class="ph-title">SHAC + BCG (ours)</span>
+          <code class="ph-path">static/videos/compare_bcg.mp4</code>
+        </div>
+        <p class="caption"><b>SHAC-Stiff + BCG (ours)</b></p>
+      </div>
+      <div class="column is-one-third">
+        <div class="media-placeholder is-4by3">
+          <span class="ph-icon"><i class="fas fa-film"></i></span>
+          <span class="ph-title">Vanilla SHAC at stiff contact</span>
+          <code class="ph-path">static/videos/compare_shac.mp4</code>
+        </div>
+        <p class="caption">SHAC-Stiff</p>
+      </div>
+      <div class="column is-one-third">
+        <div class="media-placeholder is-4by3">
+          <span class="ph-icon"><i class="fas fa-film"></i></span>
+          <span class="ph-title">PPO baseline</span>
+          <code class="ph-path">static/videos/compare_ppo.mp4</code>
+        </div>
+        <p class="caption">PPO</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ Comparisons. -->
+
+
+<!-- Gradient analysis. -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Why it works: gradient variance</h2>
+
+    <div class="columns is-centered">
+      <div class="column">
+        <div class="media-placeholder is-4by3">
+          <span class="ph-icon"><i class="fas fa-chart-line"></i></span>
+          <span class="ph-title">Policy-gradient variance during training (paper Fig. 3)</span>
+          <code class="ph-path">static/images/gradient_variance.png</code>
+        </div>
+        <p class="caption">
+          <b>Policy-gradient variance during training.</b> Summed sample variance of all
+          policy-gradient components across the 128 training environments (shading:
+          &plusmn;&nbsp;1&nbsp;std over 4,000 resamples). Lower variance with BCG means the
+          environment-wise gradients combined in each policy update agree more &mdash; fewer
+          environments pull the update in conflicting directions.
+        </p>
+      </div>
+      <div class="column">
+        <div class="media-placeholder is-4by3">
+          <span class="ph-icon"><i class="fas fa-braille"></i></span>
+          <span class="ph-title">Contact-local gradient averaging (paper Fig. 4)</span>
+          <code class="ph-path">static/images/gradient_averaging.png</code>
+        </div>
+        <p class="caption">
+          <b>Contact-local gradient averaging.</b> (a) One contact bundle during stiff contact:
+          individual perturbed branches exhibit markedly different sensitivities
+          \(\partial v_{z,T}/\partial p_{z,t}\), while their bundled average attenuates the extreme
+          responses. (b) PCA of the full state-gradient vector: orange points are individual
+          perturbed samples, blue diamonds the corresponding BCG-averaged gradients; each ellipse
+          encloses 95% of the probability mass of a fitted Gaussian.
+        </p>
+      </div>
+    </div>
+
+    <div class="columns is-centered mt-4">
+      <div class="column is-full-width">
+        <div class="media-placeholder is-wide">
+          <span class="ph-icon"><i class="fas fa-chart-area"></i></span>
+          <span class="ph-title">Learning curves on the four motions (paper Fig. 5)</span>
+          <code class="ph-path">static/images/learning_curves.png</code>
+        </div>
+        <p class="caption">
+          <b>Learning efficiency and convergence.</b> Reward on the four reference motions plotted
+          against three budgets: training iterations, environment samples, and wall-clock time.
+          SHAC+BCG reaches comparable reward with over an order of magnitude fewer samples than PPO,
+          while vanilla SHAC stalls at low reward.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ Gradient analysis. -->
+
+
+<!-- Quantitative results. -->
+<section class="section is-light-section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Quantitative results</h2>
+
+    <h3 class="title is-5 mt-5">Contact stiffness controls transfer</h3>
+    <div class="content has-text-justified">
+      <p>
+        All policies are trained with SHAC+BCG at the indicated stiffness \(\kappa\) and evaluated
+        over 5 runs after transfer to MuJoCo. <b>Falls</b> counts the runs in which root height
+        drops below 0.3&nbsp;m; <b>&Delta;d</b> is the difference in mean foot penetration depth
+        [mm] between the training simulator and MuJoCo, where positive values indicate deeper
+        penetration during training. As stiffness rises, both go down: higher physical fidelity in
+        the differentiable simulation transfers more reliably.
+      </p>
+    </div>
+    <div class="table-container">
+      <table class="table is-fullwidth is-hoverable results-table">
+        <thead>
+          <tr>
+            <th rowspan="2" class="has-text-centered">\(\kappa\)</th>
+            <th colspan="2" class="has-text-centered">Run</th>
+            <th colspan="2" class="has-text-centered">Jump</th>
+            <th colspan="2" class="has-text-centered">Fight</th>
+            <th colspan="2" class="has-text-centered">Dance</th>
+          </tr>
+          <tr>
+            <th class="has-text-centered">Falls &darr;</th>
+            <th class="has-text-centered">&Delta;d &darr;</th>
+            <th class="has-text-centered">Falls &darr;</th>
+            <th class="has-text-centered">&Delta;d &darr;</th>
+            <th class="has-text-centered">Falls &darr;</th>
+            <th class="has-text-centered">&Delta;d &darr;</th>
+            <th class="has-text-centered">Falls &darr;</th>
+            <th class="has-text-centered">&Delta;d &darr;</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="has-text-centered">50</td>
+            <td class="has-text-centered">5/5</td><td class="has-text-centered">10.6</td>
+            <td class="has-text-centered">5/5</td><td class="has-text-centered">12.6</td>
+            <td class="has-text-centered">5/5</td><td class="has-text-centered">13.3</td>
+            <td class="has-text-centered">5/5</td><td class="has-text-centered">13.5</td>
+          </tr>
+          <tr>
+            <td class="has-text-centered">100</td>
+            <td class="has-text-centered">5/5</td><td class="has-text-centered">8.1</td>
+            <td class="has-text-centered">4/5</td><td class="has-text-centered">10.8</td>
+            <td class="has-text-centered">3/5</td><td class="has-text-centered">9.1</td>
+            <td class="has-text-centered">4/5</td><td class="has-text-centered">9.5</td>
+          </tr>
+          <tr class="is-selected-row">
+            <td class="has-text-centered"><b>300</b></td>
+            <td class="has-text-centered"><b>0/5</b></td><td class="has-text-centered"><b>3.1</b></td>
+            <td class="has-text-centered"><b>0/5</b></td><td class="has-text-centered"><b>3.3</b></td>
+            <td class="has-text-centered"><b>0/5</b></td><td class="has-text-centered"><b>3.4</b></td>
+            <td class="has-text-centered"><b>0/5</b></td><td class="has-text-centered"><b>2.9</b></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="title is-5 mt-6">Tracking accuracy after sim-to-sim transfer</h3>
+    <div class="content has-text-justified">
+      <p>
+        Global mean per-body position error \(E_{\text{track}}\) [cm] after transfer to MuJoCo,
+        reported as mean &plusmn; std over 5 runs. SHAC+BCG achieves lower error on three of the
+        four motions. PPO is slightly better on Jump, but its policy keeps both feet on the ground
+        instead of reproducing the jumping motion.
+      </p>
+    </div>
+    <div class="table-container">
+      <table class="table is-fullwidth is-hoverable results-table">
+        <thead>
+          <tr>
+            <th>Motion</th>
+            <th class="has-text-centered">SHAC-Stiff + BCG (ours) [cm]</th>
+            <th class="has-text-centered">PPO [cm]</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Run</td>
+            <td class="has-text-centered"><b>34.1 &plusmn; 0.4</b></td>
+            <td class="has-text-centered">42.8 &plusmn; 0.7</td>
+          </tr>
+          <tr>
+            <td>Jump</td>
+            <td class="has-text-centered">18.6 &plusmn; 0.4</td>
+            <td class="has-text-centered"><b>18.0 &plusmn; 0.2</b></td>
+          </tr>
+          <tr>
+            <td>Fight</td>
+            <td class="has-text-centered"><b>13.5 &plusmn; 0.3</b></td>
+            <td class="has-text-centered">34.3 &plusmn; 1.4</td>
+          </tr>
+          <tr>
+            <td>Dance</td>
+            <td class="has-text-centered"><b>18.5 &plusmn; 0.8</b></td>
+            <td class="has-text-centered">19.0 &plusmn; 0.1</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+<!--/ Quantitative results. -->
+
+
+<!-- Training parameters. -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Training parameters</h2>
+    <div class="content has-text-justified">
+      <p>
+        Full list of the settings used for the experiments in the paper. Entries marked
+        <span class="tbd">TBD</span> are still to be filled in.
+      </p>
+    </div>
+
+    <div class="columns">
+      <div class="column">
+        <h3 class="title is-5">Bundled Contact Gradients</h3>
+        <div class="table-container">
+          <table class="table is-fullwidth params-table">
+            <tbody>
+              <tr><td>Bundle size \(B\)</td><td class="has-text-right">10</td></tr>
+              <tr><td>Bundle duration \(H\)</td><td class="has-text-right">2 control steps</td></tr>
+              <tr><td>Position perturbation scale \(\sigma_p\)</td><td class="has-text-right">1 cm</td></tr>
+              <tr><td>Velocity perturbation scale \(\sigma_v\)</td><td class="has-text-right">2 cm/s</td></tr>
+              <tr><td>Contact detection threshold \(\tau\)</td><td class="has-text-right">400 N</td></tr>
+              <tr><td>Aggregation \(\mathcal{A}\)</td><td class="has-text-right">arithmetic mean</td></tr>
+              <tr><td>Jacobian pseudoinverse damping</td><td class="has-text-right"><span class="tbd">TBD</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="title is-5 mt-5">Simulation</h3>
+        <div class="table-container">
+          <table class="table is-fullwidth params-table">
+            <tbody>
+              <tr><td>Simulator</td><td class="has-text-right">NVIDIA Warp</td></tr>
+              <tr><td>Contact model</td><td class="has-text-right">analytically smoothed compliant</td></tr>
+              <tr><td>Contact stiffness \(\kappa\)</td><td class="has-text-right">300</td></tr>
+              <tr><td>Physics substeps per control step \(S\)</td><td class="has-text-right"><span class="tbd">TBD</span></td></tr>
+              <tr><td>Simulation timestep</td><td class="has-text-right"><span class="tbd">TBD</span></td></tr>
+              <tr><td>Control frequency</td><td class="has-text-right"><span class="tbd">TBD</span></td></tr>
+              <tr><td>Transfer simulator (sim-to-sim)</td><td class="has-text-right">MuJoCo</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="column">
+        <h3 class="title is-5">Policy optimization (SHAC + ADD)</h3>
+        <div class="table-container">
+          <table class="table is-fullwidth params-table">
+            <tbody>
+              <tr><td>Differentiable rollout horizon \(N\)</td><td class="has-text-right">32 control steps</td></tr>
+              <tr><td>Parallel environments (SHAC+BCG)</td><td class="has-text-right">64</td></tr>
+              <tr><td>Parallel environments (PPO baseline)</td><td class="has-text-right">128</td></tr>
+              <tr><td>Discount factor \(\gamma\)</td><td class="has-text-right"><span class="tbd">TBD</span></td></tr>
+              <tr><td>Policy learning rate</td><td class="has-text-right"><span class="tbd">TBD</span></td></tr>
+              <tr><td>Critic learning rate</td><td class="has-text-right"><span class="tbd">TBD</span></td></tr>
+              <tr><td>Discriminator learning rate</td><td class="has-text-right"><span class="tbd">TBD</span></td></tr>
+              <tr><td>Policy / critic architecture</td><td class="has-text-right"><span class="tbd">TBD</span></td></tr>
+              <tr><td>Training iterations</td><td class="has-text-right"><span class="tbd">TBD</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="title is-5 mt-5">Task and hardware</h3>
+        <div class="table-container">
+          <table class="table is-fullwidth params-table">
+            <tbody>
+              <tr><td>Robot</td><td class="has-text-right">Unitree G1 humanoid</td></tr>
+              <tr><td>Reference motions</td><td class="has-text-right">LAFAN1: Run, Jump, Fight, Dance</td></tr>
+              <tr><td>Motion length</td><td class="has-text-right">15 s each</td></tr>
+              <tr><td>Imitation reward</td><td class="has-text-right">ADD</td></tr>
+              <tr><td>Fall threshold (root height)</td><td class="has-text-right">0.3 m</td></tr>
+              <tr><td>Training GPU</td><td class="has-text-right">NVIDIA RTX 2080 Ti</td></tr>
+              <tr><td>Evaluation runs per setting</td><td class="has-text-right">5</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ Training parameters. -->
 
 
 <section class="section" id="BibTeX">
   <div class="container is-max-desktop content">
     <h2 class="title">BibTeX</h2>
-    <pre><code>@article{park2021nerfies,
-  author    = {Park, Keunhong and Sinha, Utkarsh and Barron, Jonathan T. and Bouaziz, Sofien and Goldman, Dan B and Seitz, Steven M. and Martin-Brualla, Ricardo},
-  title     = {Nerfies: Deformable Neural Radiance Fields},
-  journal   = {ICCV},
-  year      = {2021},
+    <pre><code>@misc{anonymous2026bcg,
+  title  = {Bundled Contact Gradients: Stabilizing Differentiable Simulation
+            for Deployable Dynamic Tasks},
+  author = {Anonymous},
+  note   = {Under double-blind review},
+  year   = {2026},
 }</code></pre>
   </div>
 </section>
@@ -456,29 +748,19 @@
 
 <footer class="footer">
   <div class="container">
-    <div class="content has-text-centered">
-      <a class="icon-link"
-         href="./static/videos/nerfies_paper.pdf">
-        <i class="fas fa-file-pdf"></i>
-      </a>
-      <a class="icon-link" href="https://github.com/keunhong" class="external-link" disabled>
-        <i class="fab fa-github"></i>
-      </a>
-    </div>
     <div class="columns is-centered">
       <div class="column is-8">
-        <div class="content">
+        <div class="content has-text-centered">
+          <p>
+            This paper is under double-blind review. Author and affiliation information,
+            code, and data links will be released after the review process.
+          </p>
           <p>
             This website is licensed under a <a rel="license"
                                                 href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
-            Commons Attribution-ShareAlike 4.0 International License</a>.
-          </p>
-          <p>
-            This means you are free to borrow the <a
-              href="https://github.com/nerfies/nerfies.github.io">source code</a> of this website,
-            we just ask that you link back to this page in the footer.
-            Please remember to remove the analytics code included in the header of the website which
-            you do not want on your website.
+            Commons Attribution-ShareAlike 4.0 International License</a>. It borrows the
+            <a href="https://github.com/nerfies/nerfies.github.io">source code</a> of the
+            Nerfies project page.
           </p>
         </div>
       </div>

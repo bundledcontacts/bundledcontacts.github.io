@@ -1,22 +1,99 @@
+/* ---------------------------------------------------------------------------
+   Bundled Contact Gradients — project page styles
+   Built on the Nerfies project-page template.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --bcg-blue: #2f6fb5;   /* bundled gradient (paper figures) */
+  --bcg-red: #c0453c;    /* per-rollout gradients (paper figures) */
+  --bcg-ink: #363636;
+  --bcg-muted: #7a8290;
+  --bcg-line: #d5d9e0;
+}
+
 body {
   font-family: 'Noto Sans', sans-serif;
 }
 
-
 .footer .icon-link {
-    font-size: 25px;
-    color: #000;
+  font-size: 25px;
+  color: #000;
 }
 
 .link-block a {
-    margin-top: 5px;
-    margin-bottom: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
-.dnerf {
+.bcg {
   font-variant: small-caps;
+  font-weight: 600;
+  color: var(--bcg-blue);
 }
 
+
+/* --- Title block ----------------------------------------------------------- */
+
+.publication-title {
+  font-family: 'Google Sans', sans-serif;
+}
+
+.publication-subtitle {
+  font-family: 'Google Sans', sans-serif;
+  color: #4a4a4a;
+  margin-top: -0.75rem !important;
+  margin-bottom: 1.5rem !important;
+  font-weight: 400;
+}
+
+.publication-authors {
+  font-family: 'Google Sans', sans-serif;
+}
+
+.publication-authors a {
+  color: hsl(204, 86%, 53%) !important;
+}
+
+.publication-authors a:hover {
+  text-decoration: underline;
+}
+
+.author-block {
+  display: inline-block;
+}
+
+.publication-venue-line {
+  margin-top: 0.5rem;
+}
+
+.publication-venue {
+  color: #555;
+  font-weight: bold;
+}
+
+.anon-note {
+  display: block;
+  color: var(--bcg-muted);
+  font-size: 0.85rem;
+  font-style: italic;
+  margin-top: 0.15rem;
+}
+
+.publication-awards {
+  color: #ff3860;
+  width: fit-content;
+  font-weight: bolder;
+}
+
+.button.is-disabled,
+.button.is-disabled:hover {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+
+/* --- Teaser ---------------------------------------------------------------- */
 
 .teaser .hero-body {
   padding-top: 0;
@@ -27,87 +104,217 @@ body {
   font-family: 'Google Sans', sans-serif;
 }
 
-
-.publication-title {
+.teaser .subtitle {
+  margin-top: 1.25rem;
 }
 
-.publication-banner {
-  max-height: parent;
 
+/* --- Sections -------------------------------------------------------------- */
+
+.section .title.is-3 {
+  font-family: 'Google Sans', sans-serif;
+  border-bottom: 2px solid var(--bcg-line);
+  padding-bottom: 0.4rem;
+  margin-bottom: 1.5rem;
 }
 
-.publication-banner video {
+.is-light-section {
+  background-color: #fafbfc;
+  border-top: 1px solid #eef0f3;
+  border-bottom: 1px solid #eef0f3;
+}
+
+.caption {
+  font-size: 0.85rem;
+  color: #5a6068;
+  line-height: 1.45;
+  margin-top: 0.6rem;
+  text-align: center;
+}
+
+.caption b {
+  color: var(--bcg-ink);
+}
+
+
+/* --- Media: real videos/images and their placeholders ---------------------- */
+
+.result-media {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid #e3e6ea;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.media-placeholder {
   position: relative;
-  left: auto;
-  top: auto;
-  transform: none;
-  object-fit: fit;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 1.25rem;
+  text-align: center;
+  color: var(--bcg-muted);
+  border: 2px dashed #c9cdd4;
+  border-radius: 10px;
+  background: repeating-linear-gradient(45deg,
+      #fbfcfd, #fbfcfd 12px, #f3f5f8 12px, #f3f5f8 24px);
 }
 
-.publication-header .hero-body {
+.media-placeholder.is-16by9 { aspect-ratio: 16 / 9; }
+.media-placeholder.is-4by3  { aspect-ratio: 4 / 3; }
+.media-placeholder.is-wide  { aspect-ratio: 21 / 9; }
+
+.media-placeholder .ph-icon {
+  font-size: 1.9rem;
+  color: #b3b9c2;
+  line-height: 1;
 }
 
-.publication-title {
-    font-family: 'Google Sans', sans-serif;
+.media-placeholder .ph-title {
+  font-family: 'Google Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #5d6570;
+  max-width: 34rem;
 }
 
-.publication-authors {
-    font-family: 'Google Sans', sans-serif;
+.media-placeholder .ph-path {
+  font-size: 0.72rem;
+  color: #868d97;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid #e0e3e8;
+  border-radius: 4px;
+  padding: 0.1rem 0.45rem;
 }
 
-.publication-venue {
-    color: #555;
-    width: fit-content;
-    font-weight: bold;
+
+/* --- Method steps ---------------------------------------------------------- */
+
+.method-steps .step-card {
+  height: 100%;
+  background: #fff;
+  border: 1px solid #e6e9ed;
+  border-top: 3px solid var(--bcg-blue);
+  border-radius: 8px;
+  padding: 1.25rem 1.25rem 0.75rem;
 }
 
-.publication-awards {
-    color: #ff3860;
-    width: fit-content;
-    font-weight: bolder;
+.method-steps .step-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  background: var(--bcg-blue);
+  color: #fff;
+  font-family: 'Google Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
 }
 
-.publication-authors {
+.method-steps .step-card p {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin-bottom: 0.7rem;
 }
 
-.publication-authors a {
-   color: hsl(204, 86%, 53%) !important;
+.method-steps .step-card .title {
+  margin-bottom: 0.6rem;
 }
 
-.publication-authors a:hover {
-    text-decoration: underline;
+/* The three cards are narrow; keep their display math inside the card. */
+.method-steps .eq {
+  font-size: 0.78rem;
 }
 
-.author-block {
+/* Display math must never widen the page: let it scroll inside its own box. */
+.eq {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  font-size: 0.9rem;
+}
+
+.eq mjx-container[display="true"],
+mjx-container[display="true"] {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin: 0.5em 0 !important;
+}
+
+/* Flex/grid children default to min-width:auto, which lets wide content push
+   the page sideways. */
+.columns > .column,
+.step-card,
+.content {
+  min-width: 0;
+}
+
+
+/* --- Tables ---------------------------------------------------------------- */
+
+.results-table th,
+.params-table th {
+  font-family: 'Google Sans', sans-serif;
+  color: var(--bcg-ink);
+  vertical-align: middle;
+}
+
+.results-table thead th {
+  border-bottom: 2px solid var(--bcg-line);
+}
+
+.results-table tbody tr.is-selected-row {
+  background-color: #eef4fb;
+}
+
+.params-table td {
+  font-size: 0.9rem;
+  border-bottom: 1px solid #edeff2;
+}
+
+.params-table tbody tr:hover {
+  background-color: #fafbfc;
+}
+
+.tbd {
   display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #9a6a12;
+  background: #fdf3dc;
+  border: 1px solid #f2e2b6;
+  border-radius: 3px;
+  padding: 0.05rem 0.4rem;
 }
 
-.publication-banner img {
-}
 
-.publication-authors {
-  /*color: #4286f4;*/
-}
+/* --- Misc ------------------------------------------------------------------ */
 
 .publication-video {
-    position: relative;
-    width: 100%;
-    height: 0;
-    padding-bottom: 56.25%;
-
-    overflow: hidden;
-    border-radius: 10px !important;
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%;
+  overflow: hidden;
+  border-radius: 10px !important;
 }
 
 .publication-video iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
-
-.publication-body img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .results-carousel {
@@ -127,31 +334,8 @@ body {
   margin: 0;
 }
 
-
-.interpolation-panel {
-  background: #f5f5f5;
-  border-radius: 10px;
-}
-
-.interpolation-panel .interpolation-image {
-  width: 100%;
-  border-radius: 5px;
-}
-
-.interpolation-video-column {
-}
-
-.interpolation-panel .slider {
-  margin: 0 !important;
-}
-
-.interpolation-panel .slider {
-  margin: 0 !important;
-}
-
-#interpolation-image-wrapper {
-  width: 100%;
-}
-#interpolation-image-wrapper img {
-  border-radius: 5px;
+@media screen and (max-width: 768px) {
+  .media-placeholder.is-wide { aspect-ratio: 16 / 9; }
+  .media-placeholder .ph-title { font-size: 0.85rem; }
+  .method-steps .step-card { margin-bottom: 1rem; }
 }

@@ -1,37 +1,15 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
-<circle style="fill:#FFDA44;" cx="256" cy="256" r="256"/>
-<path style="fill:#338AF3;" d="M0,256C0,114.616,114.616,0,256,0s256,114.616,256,256"/>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="14" fill="#1f2a37"/>
+  <!-- stiff contact event -->
+  <circle cx="17" cy="32" r="4.5" fill="#c0453c"/>
+  <!-- diverging per-rollout gradients -->
+  <g stroke="#c0453c" stroke-width="2.6" stroke-linecap="round" fill="none" opacity="0.85">
+    <path d="M20 31 C30 17, 38 15, 46 14"/>
+    <path d="M20 33 C30 47, 38 49, 46 50"/>
+    <path d="M20 30 C30 24, 38 22, 44 21"/>
+    <path d="M20 34 C30 40, 38 42, 44 43"/>
+  </g>
+  <!-- bundled average -->
+  <path d="M20 32 H45" stroke="#4d9be6" stroke-width="5" stroke-linecap="round"/>
+  <path d="M40 25 L50 32 L40 39 Z" fill="#4d9be6"/>
 </svg>
