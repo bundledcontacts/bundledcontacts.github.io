@@ -199,11 +199,11 @@
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
         <h2 class="title is-3">Video</h2>
-        <div class="media-placeholder is-16by9">
-          <span class="ph-icon"><i class="fas fa-video"></i></span>
-          <span class="ph-title">Supplementary video (method walkthrough + results)</span>
-          <code class="ph-path">static/videos/supplementary.mp4</code>
-        </div>
+        <video class="result-media" controls playsinline preload="metadata"
+               poster="./static/images/supplementary_poster.jpg">
+          <source src="./static/videos/supplementary.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
       </div>
     </div>
   </div>
