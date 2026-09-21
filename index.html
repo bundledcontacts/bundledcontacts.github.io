@@ -357,26 +357,29 @@
 
     <div class="content has-text-justified">
       <p>
-        Each clip below runs in two phases. First a <b class="ph-fwd">forward rollout</b>: the
-        simulator steps the robot forward in time while the foot comes into contact with the
-        ground. Then a <b class="ph-bwd">backward pass</b>: red arrows sweep back through the
-        same rollout, from right to left.
+        To visualize how BCG affects the gradient, we measure how a small change in the
+        G1's <b>pelvis height</b> influences its <b>future vertical pelvis velocity</b>
+        during the Jump motion. We use this quantity because vertical motion during a
+        jump is strongly coupled to foot-ground contact, making it an intuitive way to
+        visualize contact-induced gradient sensitivity.
       </p>
+
       <p>
-        Nothing is moving backwards in time there. The second phase is the chain rule being
-        applied in reverse. As the simulation runs forward, automatic differentiation records
-        every step on a tape. To find out how the outcome at the end of the rollout depends on
-        the state at some earlier step, it has to start from that outcome and multiply the
-        per-step Jacobians one at a time, walking back along the tape. The arrow drawn at time
-        \(t\) is the result of that walk: how much the final pelvis velocity would change if the
-        state at \(t\) were nudged. It can only be computed once every step <i>after</i> \(t\)
-        has been passed through &mdash; which is why the animation travels right to left. It is
-        a way of showing the order of the computation, not the direction of time.
+        Each clip has two phases. First, during the
+        <b class="ph-fwd">forward rollout</b>, the simulator advances the robot through
+        the motion as its foot makes contact with the ground. Then, during the
+        <b class="ph-bwd">backward pass</b>, automatic differentiation propagates
+        sensitivities backward through the recorded simulation to compute how earlier
+        states influenced the final motion.
       </p>
+
       <p>
-        That order is also why contact stiffness matters so much. The contact step's Jacobian
-        sits in the middle of that product, and everything propagated through it inherits its
-        behaviour.
+        This is why the gradient visualization moves from right to left. During the
+        forward rollout, the simulator records the sequence of computations. The
+        backward pass then follows this sequence in reverse, applying the chain rule
+        from the final outcome back toward earlier states. The right-to-left motion
+        therefore represents the <b>direction of gradient propagation</b>, not the
+        direction of simulated time.
       </p>
     </div>
 
