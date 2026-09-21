@@ -35,4 +35,44 @@
   }, { rootMargin: '200px 0px', threshold: 0.1 });
 
   vids.forEach(function (v) { io.observe(v); });
+
+  /* A video with `data-cues="<selector>"` drives a list of steps: the step whose
+   * data-start the playhead has last passed is marked .is-active, and clicking a
+   * step seeks to it. The list is only marked .is-synced once this runs, so with
+   * JS disabled the steps render as a plain, fully legible list. */
+  vids.forEach(function (v) {
+    var list = v.dataset.cues && document.querySelector(v.dataset.cues);
+    if (!list) return;
+    var cues = [].slice.call(list.children);
+    var starts = cues.map(function (c) { return parseFloat(c.dataset.start) || 0; });
+    var current = -1;
+
+    list.classList.add('is-synced');
+
+    function mark(i) {
+      if (i === current) return;
+      if (cues[current]) cues[current].classList.remove('is-active');
+      if (cues[i]) cues[i].classList.add('is-active');
+      current = i;
+    }
+
+    v.addEventListener('timeupdate', function () {
+      var t = v.currentTime, i = 0;
+      while (i + 1 < starts.length && t >= starts[i + 1]) i++;
+      mark(i);
+    });
+
+    cues.forEach(function (c, i) {
+      c.addEventListener('click', function () {
+        // play() may still have to load(), which resets currentTime -- so start
+        // playback first and seek once there is a timeline to seek in.
+        play(v);
+        mark(i);
+        if (v.readyState >= 1) v.currentTime = starts[i];
+        else v.addEventListener('loadedmetadata', function () {
+          v.currentTime = starts[i];
+        }, { once: true });
+      });
+    });
+  });
 })();

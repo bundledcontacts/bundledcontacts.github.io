@@ -113,10 +113,11 @@ body {
   background: rgba(6, 7, 8, 0.9);
 }
 
-/* A phone should not download 4 MB of hero footage: fall back to the poster. */
+/* Phones play the same loop, from a smaller encode picked in index.html.  The
+   poster sits behind it so there is an image on screen immediately, and if
+   autoplay is refused (iOS low-power mode) it is what stays visible. */
 @media screen and (max-width: 768px) {
   .project-hero { min-height: 82svh; }
-  .project-hero-video { display: none; }
   .project-hero-media {
     background: url("../images/hero_poster.jpg") center center / cover no-repeat #111315;
   }
@@ -328,39 +329,55 @@ mjx-container[display="true"] {
 
 /* --- Pipeline walk-through ------------------------------------------------- */
 
-.pipeline {
+.pipeline-cues {
   list-style: none;
-  margin: 0;
+  margin: 1.25rem 0 0;
   padding: 0;
-  counter-reset: none;
 }
 
-.pipeline-step {
-  margin: 0 0 2.5rem;
-}
-
-.pipeline-step img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border: 1px solid #e3e6ea;
-  border-radius: 10px;
-  background: #fff;
-}
-
-.pipeline-text {
+.pipeline-cue {
   display: flex;
   align-items: baseline;
   gap: 0.85rem;
-  margin-top: 0.85rem;
-  padding: 0 0.2rem;
+  margin: 0;
+  padding: 0.6rem 0.8rem;
+  border-left: 3px solid transparent;
+  border-radius: 0 6px 6px 0;
+  cursor: pointer;
+  transition: background-color 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
+  opacity: 0.55;
 }
 
-.pipeline-text p {
+.pipeline-cue p {
   margin: 0;
-  font-size: 1.02rem;
+  font-size: 1rem;
   line-height: 1.6;
   color: var(--bcg-ink);
+}
+
+.pipeline-cue:hover {
+  opacity: 0.85;
+}
+
+.pipeline-cue.is-active {
+  opacity: 1;
+  background: #eef4fb;
+  border-left-color: var(--bcg-blue);
+}
+
+/* Without JS nothing is marked active, so every step reads at full strength. */
+.pipeline-cues:not(.is-synced) .pipeline-cue {
+  opacity: 1;
+  cursor: default;
+}
+
+.pipeline-cue .pipeline-index {
+  background: var(--bcg-muted);
+  transition: background-color 0.25s ease;
+}
+
+.pipeline-cue.is-active .pipeline-index {
+  background: var(--bcg-blue);
 }
 
 .pipeline-index {

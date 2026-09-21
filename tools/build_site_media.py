@@ -69,6 +69,22 @@ def cut(parts, name, xfade=0.0):
 # --------------------------------------------------------------------------
 # which timeline segments are hardware footage
 # --------------------------------------------------------------------------
+# The film cuts these shots short to fit the narration.  A page has no voice to
+# keep up with, so here they run to the end of the take instead.  This is the
+# only place the site deliberately departs from timeline.py.
+RUN_TO_END = {"Deployment/Run_followcam_0.MOV"}
+
+
+def site_parts(parts):
+    out = []
+    for p in parts:
+        p = dict(p)
+        if p["src"] in RUN_TO_END:
+            p["t1"] = B.duration(os.path.join(VIDEOS, p["src"])) - 0.05
+        out.append(p)
+    return out
+
+
 def deployment_segments():
     """[(name, parts, xfade)] for every segment shot on the real robot, in the
     order the film plays them.  Derived from timeline.py, never hardcoded."""
@@ -76,11 +92,12 @@ def deployment_segments():
     for seg in T.SEGMENTS:
         if seg["kind"] == "title" and seg["src"].startswith("Deployment/"):
             out.append(("intro",
-                        [dict(src=seg["src"], t0=seg["t0"], t1=seg["t1"])], 0.0))
+                        site_parts([dict(src=seg["src"],
+                                         t0=seg["t0"], t1=seg["t1"])]), 0.0))
         elif seg["kind"] == "clip" and all(
                 p["src"].startswith("Deployment/") for p in seg["parts"]):
             out.append((seg["key"].split("_")[-1],
-                        [dict(p) for p in seg["parts"]], seg.get("xfade", 0.0)))
+                        site_parts(seg["parts"]), seg.get("xfade", 0.0)))
     return out
 
 
@@ -90,10 +107,11 @@ def deployment_segments():
 def g_hero():
     """One long loop of every hardware shot, cross-faded as in the film.  No
     title card and no burnt-in motion captions -- the page's own title sits on
-    top of it."""
+    top of it.  A second, smaller encode is served to phones."""
     parts = [p for _, ps, _ in deployment_segments() for p in ps]
     src = cut(parts, "hero", T.XFADE)
     web(src, "hero_deployment.mp4", height=720, crf=28)
+    web(src, "hero_deployment_small.mp4", height=480, crf=30, fps=25)
     poster(src, "hero_poster.jpg", 2.0)
 
 
@@ -140,37 +158,28 @@ def g_stills():
 
 
 def g_pipeline():
-    """One panel per pipeline stage, framed by that stage's camera rect -- the
-    stills behind the slideshow in the long cut of the film."""
-    stages = next(s for s in T.SEGMENTS if s["key"] == "07_pipeline")["stages"]
-    pngs = B.render_stage_pngs(stages)
-    # A stage with no narration exists only so an element appears mid-sentence;
-    # on a page it has no text of its own, so it folds into the stage before it
-    # and contributes its (later) picture.
-    panels = []
-    for png, st in zip(pngs, stages):
-        if st.get("say") is None and panels:
-            panels[-1] = (png, st, panels[-1][2])
-        else:
-            panels.append((png, st, st["say"]))
-    aspect = 1816 / 948                       # the film's slide, kept identical
-    for k, (png, st, _say) in enumerate(panels):
-        img = Image.open(png).convert("RGB")
-        fw, fh = img.size
-        x0, y0, x1, y1 = st["cam"]
-        cx, cy = (x0 + x1) / 2 * fw, (y0 + y1) / 2 * fh
-        w, h = (x1 - x0) * fw, (y1 - y0) * fh
-        w, h = (h * aspect, h) if w / h < aspect else (w, w / aspect)
-        box = (round(cx - w / 2), round(cy - h / 2),
-               round(cx + w / 2), round(cy + h / 2))
-        out = Image.new("RGB", (box[2] - box[0], box[3] - box[1]), (255, 255, 255))
-        sx0, sy0, sx1, sy1 = max(0, box[0]), max(0, box[1]), min(fw, box[2]), min(fh, box[3])
-        if sx1 > sx0 and sy1 > sy0:
-            out.paste(img.crop((sx0, sy0, sx1, sy1)), (sx0 - box[0], sy0 - box[1]))
-        W = 1500
-        out.resize((W, round(W / aspect)), Image.LANCZOS).save(
-            os.path.join(IMG_OUT, f"pipeline_{k}.png"), optimize=True)
-        print(f"  pipeline_{k}.png")
+    """The pipeline slideshow from the long cut of the film, as a silent loop.
+
+    Also prints the cue table the page needs: each stage of the slideshow has a
+    line of narration in the film, and index.html highlights the matching line
+    as the video reaches it.  A stage with no narration exists only so an
+    element appears mid-sentence, so it folds into the stage before it.  Paste
+    the printed `data-start` values into the .pipeline-cue list if the timeline
+    ever changes.
+    """
+    seg = next(s for s in T.SEGMENTS if s["key"] == "07_pipeline")
+    src = os.path.join(B.WORK, f"seg_{seg['key']}.mp4")
+    if not os.path.exists(src):                     # film not built yet
+        src = B.BUILDERS["pipeline"](seg)
+    web(src, "pipeline.mp4", height=720, crf=26)
+    poster(src, "pipeline_poster.jpg", 0.5)
+
+    t = 0.0
+    for st in seg["stages"]:
+        if st.get("say") is not None:
+            print(f'    data-start="{t:.1f}"  {st["say"][:64]}...')
+        t += st["dur"]
+    print(f"    (loop length {t:.1f}s)")
 
 
 def g_mainfig():
