@@ -165,20 +165,22 @@
           <p>
             Differentiable simulators provide analytic gradients of the robot dynamics, which
             lets a policy be optimized with first-order methods instead of by sampling alone.
-            In practice this is much more sample-efficient than reinforcement learning. Contact
-            is where it becomes difficult: to keep those gradients smooth, differentiable
-            simulators usually soften the contact model, and a policy trained that way learns
-            to rely on compliance that a real robot does not have.
+            In practice this is much more sample-efficient with faster wall-clock training time
+            compared to reinforcement learning. However, to keep gradients smooth, differentiable
+            simulators usually soften the contact model at the cost of physical fidelity, making 
+            it hard to deploy policies in the real world.
           </p>
           <p>
-            Making the contact model stiffer fixes the physics but breaks the gradient. Near a
+            Increasing the contact model stiffness makes the simulation more physically accurate,
+            but causes gradient variance to increase. Near a
             stiff contact event, small changes in the contact configuration produce large
             changes in the derivative, so rollouts that start close together disagree about
             which direction improves the return, and first-order learning stalls.
           </p>
           <p>
-            <b>Bundled Contact Gradients (BCG)</b> keeps the contact model stiff and changes
-            only what the gradient sees. When a contact impulse crosses a threshold, we simulate
+            <b>Bundled Contact Gradients (BCG)</b> allows the stiffness of the contact model 
+            to be increased and reduces overall gradient variance from stiff contact events.
+            When a contact impulse crosses a threshold, we simulate
             a small bundle of randomly perturbed copies of that contact state in parallel and
             average them before continuing the rollout. The forward dynamics stay stiff and
             deployable, while the backward pass sees an averaged sensitivity that depends much
@@ -235,20 +237,17 @@
         The simulator uses an analytically smoothed compliant contact model, in which contact
         impulses are scaled by penetration depth \(d\) through
         \(s_\kappa(d) = \bigl(1+\exp(-\kappa d)\bigr)^{-1}\). The stiffness \(\kappa\) sets how
-        closely the model approaches hard contact. It is the one knob that decides both how
-        physically faithful the simulation is and how well-behaved its gradients are, and the
-        two pull in opposite directions.
+        closely the model approaches hard contact.
       </p>
     </div>
 
-    <h3 class="title is-5">What contact softness costs</h3>
+    <h3 class="title is-5">Soft vs Stiff Contact Visualization</h3>
     <div class="content has-text-justified">
       <p>
         The same tracking policy, rolled out under a soft and a stiff contact model. Under soft
         contact the foot sinks visibly into the ground &mdash; the red wedge below is the
-        penetrating volume &mdash; and the policy is free to push against a floor that yields.
-        Under stiff contact the foot stays on the surface. A policy that has learned to use the
-        compliance on the left has no equivalent to use after transfer.
+        penetrating volume. Under stiff contact the foot stays on the surface. The 
+        policy trained with the soft contact model fails to transfer to MuJoCo. 
       </p>
     </div>
 
@@ -279,83 +278,6 @@
       </div>
     </div>
 
-    <h3 class="title is-5 mt-6">Keeping the forward pass stiff</h3>
-    <div class="content has-text-justified">
-      <p>
-        BCG leaves the contact model alone and intervenes only where the first-order gradient is
-        fragile. Bundling is triggered by the contact itself: it runs only when a contact normal
-        impulse exceeds a detection threshold \(\tau\), and the branches are advanced in parallel
-        on the GPU, so the extra cost is incurred at stiff contact events and nowhere else.
-      </p>
-    </div>
-
-    <div class="columns is-centered method-steps">
-      <div class="column">
-        <div class="step-card">
-          <span class="step-index">1</span>
-          <h3 class="title is-5">Contact-local perturbation</h3>
-          <p>
-            When the set of contacts whose normal impulse exceeds \(\tau\) is non-empty, we
-            perturb the contacting kinematic chain in <i>Cartesian</i> space, so the
-            perturbation scale has a direct physical meaning, and map the offsets back to joint
-            space through the damped pseudoinverse of the Jacobian \(J_k\):
-          </p>
-          <p class="eq">
-            \[\begin{aligned}
-               \Delta p^{(i)} &\sim \mathcal{N}(0,\sigma_p^2 I),\\[1pt]
-               \Delta v^{(i)} &\sim \mathcal{N}(0,\sigma_v^2 I),\\[1pt]
-               \Delta q^{(i)} &= J_k^{\dagger}\Delta p^{(i)},\\[1pt]
-               \Delta \dot q^{(i)} &= J_k^{\dagger}\Delta v^{(i)}.
-               \end{aligned}\]
-          </p>
-          <p>
-            Each offset is treated as a constant in the backward pass, so no gradient flows
-            through the sampling itself.
-          </p>
-        </div>
-      </div>
-      <div class="column">
-        <div class="step-card">
-          <span class="step-index">2</span>
-          <h3 class="title is-5">Multi-step bundled rollout</h3>
-          <p>
-            The \(B\) perturbed branches evolve for \(H\) control steps under
-            <i>shared</i> actions, then are aggregated back into a single representative state
-            that continues the nominal rollout:
-          </p>
-          <p class="eq">
-            \[\begin{aligned}
-               x^{(i)}_{t+1} &= f_\kappa\!\left(x^{(i)}_t, a_t\right),\\[2pt]
-               \bar{x}_{t+1} &= \mathcal{A}\!\left(x^{(1)}_{t+1},\dots,x^{(B)}_{t+1}\right).
-               \end{aligned}\]
-          </p>
-          <p>
-            Even \(H=1\) already allows \(S\) physics substeps of branch evolution before the
-            average supplies the reward and the next action. The forward rollout therefore stays
-            stiff and deployable.
-          </p>
-        </div>
-      </div>
-      <div class="column">
-        <div class="step-card">
-          <span class="step-index">3</span>
-          <h3 class="title is-5">Gradient propagation</h3>
-          <p>
-            Because the aggregation is an arithmetic mean over branches, the state sensitivity
-            that leaves the bundle is an <i>average</i> of per-branch sensitivities:
-          </p>
-          <p class="eq">
-            \[\bar{Z}_{t+1} = \frac{1}{B}\sum_{i=1}^{B}
-              \left(F_{x,t}Z^{(i)}_t + F_{a,t}U_t\right).\]
-          </p>
-          <p>
-            This attenuates sharp, contact-dependent variations by combining sensitivities from
-            nearby trajectories, while the shared action sensitivity \(U_t\) retains the
-            policy's feedback through all \(H\cdot S\) simulation substeps.
-          </p>
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 <!--/ Method overview. -->
