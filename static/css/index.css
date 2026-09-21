@@ -32,6 +32,97 @@ body {
 }
 
 
+/* --- Video hero -----------------------------------------------------------
+   Adapted from the ViBe project page (lok-i.github.io/vibe-control): a
+   full-bleed looping video behind the title, a scrim to keep the text legible,
+   and the title block floated on top.  The video is the film's hardware
+   footage, cut by tools/build_site_media.py.
+   --------------------------------------------------------------------------- */
+
+.project-hero {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  background: #171819;
+}
+
+.project-hero-media,
+.project-hero-scrim {
+  position: absolute;
+  inset: 0;
+}
+
+.project-hero-media {
+  z-index: 0;
+  background: radial-gradient(circle, #25282c 0%, #111315 68%, #090a0b 100%);
+}
+
+.project-hero-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.project-hero-scrim {
+  z-index: 1;
+  background:
+    linear-gradient(rgba(5, 8, 12, 0.42) 0%, rgba(5, 8, 12, 0.52) 54%, rgba(5, 8, 12, 0.68) 100%),
+    linear-gradient(90deg, rgba(5, 8, 12, 0.20), transparent 32%, transparent 68%, rgba(5, 8, 12, 0.20));
+}
+
+.project-hero .hero-body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  padding: 4rem 1.5rem;
+}
+
+.project-hero .publication-title {
+  color: #fff;
+  font-size: clamp(2.15rem, 5vw, 4rem);
+  line-height: 1.08;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.72);
+}
+
+.project-hero .publication-subtitle {
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.8);
+  margin-top: 0.35rem !important;
+}
+
+.project-hero .publication-authors,
+.project-hero .publication-venue {
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+}
+
+.project-hero .publication-links .button {
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(16, 18, 20, 0.78);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
+  color: #fff;
+  backdrop-filter: blur(8px);
+}
+
+.project-hero .publication-links a.button:not(.is-disabled):hover {
+  border-color: rgba(255, 255, 255, 0.52);
+  background: rgba(6, 7, 8, 0.9);
+}
+
+/* A phone should not download 4 MB of hero footage: fall back to the poster. */
+@media screen and (max-width: 768px) {
+  .project-hero { min-height: 82svh; }
+  .project-hero-video { display: none; }
+  .project-hero-media {
+    background: url("../images/hero_poster.jpg") center center / cover no-repeat #111315;
+  }
+}
+
+
 /* --- Title block ----------------------------------------------------------- */
 
 .publication-title {
@@ -232,6 +323,81 @@ mjx-container[display="true"] {
 .step-card,
 .content {
   min-width: 0;
+}
+
+
+/* --- Pipeline walk-through ------------------------------------------------- */
+
+.pipeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: none;
+}
+
+.pipeline-step {
+  margin: 0 0 2.5rem;
+}
+
+.pipeline-step img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid #e3e6ea;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.pipeline-text {
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+  margin-top: 0.85rem;
+  padding: 0 0.2rem;
+}
+
+.pipeline-text p {
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: var(--bcg-ink);
+}
+
+.pipeline-index {
+  flex: 0 0 auto;
+  width: 1.7rem;
+  height: 1.7rem;
+  line-height: 1.7rem;
+  text-align: center;
+  border-radius: 50%;
+  background: var(--bcg-blue);
+  color: #fff;
+  font-family: 'Google Sans', sans-serif;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+
+/* --- Gradient phases ------------------------------------------------------- */
+
+.ph-fwd { color: #2f9e4f; }
+.ph-bwd { color: #d2801e; }
+
+
+/* --- Limitations ----------------------------------------------------------- */
+
+.limitation {
+  border-left: 3px solid var(--bcg-line);
+  padding: 0.1rem 0 0.1rem 1.15rem;
+  margin-bottom: 1.9rem;
+}
+
+.limitation .title.is-5 {
+  margin-bottom: 0.5rem;
+}
+
+.limitation .content {
+  margin-bottom: 0;
 }
 
 
