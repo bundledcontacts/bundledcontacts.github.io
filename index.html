@@ -618,13 +618,14 @@
 <!-- ========================================================= Limitations. -->
 <section class="section" id="limitations">
   <div class="container is-max-desktop">
-    <h2 class="title is-3">Limitations</h2>
+    <h2 class="title is-3">Limitations and Discussion</h2>
 
     <div class="limitation">
       <h3 class="title is-5">Training remains computationally expensive</h3>
       <div class="content has-text-justified">
         <p>
-          Our contact model solves an LCP over eight contact spheres, with four spheres
+          The contact model we use is suited for differentiable simulation but it 
+          solves an LCP over eight contact spheres, with four spheres
           on each foot. This makes each simulation step relatively expensive, so training
           remains slow in absolute wall-clock time despite the sample efficiency of
           first-order learning.
@@ -679,67 +680,9 @@
     <h2 class="title is-3">Training parameters</h2>
     <div class="content has-text-justified">
       <p>
-        Full list of the settings used for the experiments in the paper. Unless noted otherwise,
-        SHAC (with and without BCG) and the PPO baseline share the same environment, observations,
-        imitation reward and domain randomization. SHAC + BCG was trained with
-        <strong>64</strong> parallel environments and vanilla SHAC with <strong>128</strong>.
+        Full list of the settings used for the experiments in the paper. Entries marked
+        <span class="tbd">TBD</span> are still to be filled in.
       </p>
-    </div>
-
-    <div class="columns">
-      <div class="column">
-        <h3 class="title is-5">SHAC</h3>
-        <div class="table-container">
-          <table class="table is-fullwidth params-table">
-            <tbody>
-              <tr><td>Parallel environments</td><td class="has-text-right">64 (SHAC + BCG) / 128 (vanilla SHAC)</td></tr>
-              <tr><td>Differentiable rollout horizon \(N\)</td><td class="has-text-right">32 control steps</td></tr>
-              <tr><td>Training iterations</td><td class="has-text-right">3000</td></tr>
-              <tr><td>Discount factor \(\gamma\)</td><td class="has-text-right">0.99</td></tr>
-              <tr><td>TD(\(\lambda\)) parameter \(\lambda\)</td><td class="has-text-right">0.95</td></tr>
-              <tr><td>Actor learning rate</td><td class="has-text-right">\(5\times10^{-3}\)</td></tr>
-              <tr><td>Critic learning rate</td><td class="has-text-right">\(2\times10^{-3}\)</td></tr>
-              <tr><td>Learning-rate schedule</td><td class="has-text-right">linear decay to \(10^{-5}\)</td></tr>
-              <tr><td>Optimizer</td><td class="has-text-right">Adam, \(\beta = (0.7,\,0.95)\)</td></tr>
-              <tr><td>Critic ensemble size</td><td class="has-text-right">3</td></tr>
-              <tr><td>Critic iterations / mini-batches</td><td class="has-text-right">16 / 4</td></tr>
-              <tr><td>Max. gradient norm (actor / critic)</td><td class="has-text-right">1.0 / 10.0</td></tr>
-              <tr><td>Initial action std \(\sigma_0\)</td><td class="has-text-right">1.0 (learned)</td></tr>
-              <tr><td>Observation / return normalization</td><td class="has-text-right">running mean-std</td></tr>
-              <tr><td>Actor MLP</td><td class="has-text-right">[512, 256, 128]</td></tr>
-              <tr><td>Critic MLP</td><td class="has-text-right">[256, 256]</td></tr>
-              <tr><td>Activation</td><td class="has-text-right">ELU (+ LayerNorm)</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="column">
-        <h3 class="title is-5">PPO</h3>
-        <div class="table-container">
-          <table class="table is-fullwidth params-table">
-            <tbody>
-              <tr><td>Parallel environments</td><td class="has-text-right">4096</td></tr>
-              <tr><td>Rollout horizon</td><td class="has-text-right">24 control steps</td></tr>
-              <tr><td>Training iterations</td><td class="has-text-right">3000</td></tr>
-              <tr><td>Discount factor \(\gamma\)</td><td class="has-text-right">0.99</td></tr>
-              <tr><td>GAE parameter \(\lambda\)</td><td class="has-text-right">0.95</td></tr>
-              <tr><td>Learning rate (actor / critic)</td><td class="has-text-right">\(10^{-3}\) / \(10^{-3}\)</td></tr>
-              <tr><td>Learning-rate schedule</td><td class="has-text-right">adaptive, \(\mathrm{KL}^{*} = 0.01\)</td></tr>
-              <tr><td>Learning epochs / mini-batches</td><td class="has-text-right">5 / 4</td></tr>
-              <tr><td>Clip parameter \(\epsilon\)</td><td class="has-text-right">0.2</td></tr>
-              <tr><td>Value loss coefficient</td><td class="has-text-right">1.0 (clipped)</td></tr>
-              <tr><td>Entropy coefficient</td><td class="has-text-right">0.0</td></tr>
-              <tr><td>Max. gradient norm</td><td class="has-text-right">1.0</td></tr>
-              <tr><td>Initial action std \(\sigma_0\)</td><td class="has-text-right">0.3 (learned)</td></tr>
-              <tr><td>Observation normalization</td><td class="has-text-right">empirical</td></tr>
-              <tr><td>Actor MLP</td><td class="has-text-right">[512, 256, 128]</td></tr>
-              <tr><td>Critic MLP</td><td class="has-text-right">[256, 256]</td></tr>
-              <tr><td>Activation</td><td class="has-text-right">ELU</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
 
     <div class="columns">
@@ -749,111 +692,58 @@
           <table class="table is-fullwidth params-table">
             <tbody>
               <tr><td>Bundle size \(B\)</td><td class="has-text-right">10</td></tr>
-              <tr><td>Bundle duration \(H\)</td><td class="has-text-right">2 control steps</td></tr>
+              <tr><td>Bundle duration \(H\)</td><td class="has-text-right">2 control steps (8 simulation substeps)</td></tr>
               <tr><td>Position perturbation scale \(\sigma_p\)</td><td class="has-text-right">1 cm</td></tr>
               <tr><td>Velocity perturbation scale \(\sigma_v\)</td><td class="has-text-right">2 cm/s</td></tr>
               <tr><td>Contact detection threshold \(\tau\)</td><td class="has-text-right">400 N</td></tr>
               <tr><td>Aggregation \(\mathcal{A}\)</td><td class="has-text-right">arithmetic mean</td></tr>
-              <tr><td>Perturbation groups</td><td class="has-text-right">per foot, \(\delta\mathbf{x} \in \mathbb{R}^{3}\)</td></tr>
-              <tr><td>Jacobian pseudoinverse damping \(\lambda_J\)</td><td class="has-text-right">\(10^{-4}\)</td></tr>
-              <tr><td>Joint-space clamp \(|\delta q|\,/\,|\delta\dot q|\)</td><td class="has-text-right">0.1 rad / 0.5 rad/s</td></tr>
+              <tr><td>Jacobian pseudoinverse damping</td><td class="has-text-right"><span class="tbd">TBD</span></td></tr>
             </tbody>
           </table>
         </div>
-      </div>
 
-      <div class="column">
-        <h3 class="title is-5">Simulation</h3>
+        <h3 class="title is-5 mt-5">Simulation</h3>
         <div class="table-container">
           <table class="table is-fullwidth params-table">
             <tbody>
               <tr><td>Simulator</td><td class="has-text-right">NVIDIA Warp</td></tr>
               <tr><td>Contact model</td><td class="has-text-right">analytically smoothed compliant</td></tr>
               <tr><td>Contact stiffness \(\kappa\)</td><td class="has-text-right">300</td></tr>
-              <tr><td>Contact solver iterations</td><td class="has-text-right">10</td></tr>
-              <tr><td>Contact spheres per foot</td><td class="has-text-right">4</td></tr>
-              <tr><td>Control step \(\Delta t\)</td><td class="has-text-right">0.02 s (50 Hz)</td></tr>
-              <tr><td>Physics substeps per control step \(S\)</td><td class="has-text-right">4</td></tr>
-              <tr><td>Physics step \(\Delta t / S\)</td><td class="has-text-right">0.005 s (200 Hz)</td></tr>
-              <tr><td>Episode length</td><td class="has-text-right">20 s (1000 control steps)</td></tr>
-              <tr><td>Action scale \(\alpha\)</td><td class="has-text-right">\(\mathbf{q}^{*} = \mathbf{q}_0 + 0.4\,\mathbf{a}\)</td></tr>
-              <tr><td>Transfer simulator (sim-to-sim)</td><td class="has-text-right">MuJoCo, 0.002 s step</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <h3 class="title is-5 mt-2">Observations</h3>
-    <div class="content has-text-justified">
-      <p>
-        Actor and critic receive the same observation \(\mathbf{o}_t \in \mathbb{R}^{849}\); the critic sees it
-        without noise. It consists of the robot state and the reference motion at the next three control steps
-        \(t{+}1, t{+}2, t{+}3\). Rotations use the 6D tangent-normal encoding, and key-body positions are expressed
-        relative to the root. The five key bodies are both ankles, the head and both wrists. Noise is sampled
-        uniformly from \(\mathcal{U}(-n, n)\). The policy outputs joint position targets
-        \(\mathbf{a}_t \in \mathbb{R}^{29}\).
-      </p>
-    </div>
-    <div class="table-container">
-      <table class="table is-fullwidth params-table">
-        <thead>
-          <tr><th>Observation</th><th class="has-text-centered">Dimension</th><th class="has-text-right">Noise \(n\)</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Root height \(h\)</td><td class="has-text-centered">\(\mathbb{R}^{1}\)</td><td class="has-text-right">&ndash;</td></tr>
-          <tr><td>Root orientation \(\mathbf{R}\)</td><td class="has-text-centered">\(\mathbb{R}^{6}\)</td><td class="has-text-right">0.05 rad</td></tr>
-          <tr><td>Root linear velocity \(\mathbf{v}\)</td><td class="has-text-centered">\(\mathbb{R}^{3}\)</td><td class="has-text-right">0.5 m/s</td></tr>
-          <tr><td>Root angular velocity \(\boldsymbol{\omega}\)</td><td class="has-text-centered">\(\mathbb{R}^{3}\)</td><td class="has-text-right">0.2 rad/s</td></tr>
-          <tr><td>Joint rotations \(\mathbf{q}\) (30 bodies &times; 6D)</td><td class="has-text-centered">\(\mathbb{R}^{180}\)</td><td class="has-text-right">0.01 rad</td></tr>
-          <tr><td>Joint velocities \(\dot{\mathbf{q}}\)</td><td class="has-text-centered">\(\mathbb{R}^{29}\)</td><td class="has-text-right">0.5 rad/s</td></tr>
-          <tr><td>Key-body positions \(\mathbf{p}_{\text{key}}\)</td><td class="has-text-centered">\(\mathbb{R}^{15}\)</td><td class="has-text-right">0.01 m</td></tr>
-          <tr><td>Reference root position \(\hat{\mathbf{p}}_{\text{root}}\) (relative to robot)</td><td class="has-text-centered">\(\mathbb{R}^{3\times3}\)</td><td class="has-text-right">0.25 m</td></tr>
-          <tr><td>Reference root orientation \(\hat{\mathbf{R}}\)</td><td class="has-text-centered">\(\mathbb{R}^{3\times6}\)</td><td class="has-text-right">&ndash;</td></tr>
-          <tr><td>Reference joint rotations \(\hat{\mathbf{q}}\)</td><td class="has-text-centered">\(\mathbb{R}^{3\times180}\)</td><td class="has-text-right">&ndash;</td></tr>
-          <tr><td>Reference key-body positions \(\hat{\mathbf{p}}_{\text{key}}\)</td><td class="has-text-centered">\(\mathbb{R}^{3\times15}\)</td><td class="has-text-right">&ndash;</td></tr>
-          <tr><td><strong>Total</strong></td><td class="has-text-centered">\(\mathbb{R}^{849}\)</td><td class="has-text-right"></td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="columns mt-4">
-      <div class="column">
-        <h3 class="title is-5">Domain randomization</h3>
-        <div class="table-container">
-          <table class="table is-fullwidth params-table">
-            <tbody>
-              <tr><td>Ground friction \(\mu\)</td><td class="has-text-right">\(\mathcal{U}(0.3,\,1.2)\)</td></tr>
-              <tr><td>Base mass offset</td><td class="has-text-right">\(\mathcal{U}(-3,\,3)\) kg</td></tr>
-              <tr><td>Link mass scale</td><td class="has-text-right">\(\mathcal{U}(0.8,\,1.2)\)</td></tr>
-              <tr><td>Link CoM offset (per axis)</td><td class="has-text-right">\(\mathcal{U}(-3,\,3)\) cm</td></tr>
-              <tr><td>PD gain scale \(k_p, k_d\)</td><td class="has-text-right">\(\mathcal{U}(0.8,\,1.2)\)</td></tr>
-              <tr><td>Joint armature scale</td><td class="has-text-right">\(\mathcal{U}(0.75,\,1.25)\)</td></tr>
-              <tr><td>Joint friction scale</td><td class="has-text-right">\(\mathcal{U}(0.5,\,1.5)\)</td></tr>
-              <tr><td>Default joint position offset</td><td class="has-text-right">\(\mathcal{U}(-0.01,\,0.01)\) rad</td></tr>
-              <tr><td>Action latency</td><td class="has-text-right">\(\{0, 1\}\) control steps</td></tr>
-              <tr><td>Push interval</td><td class="has-text-right">\(\mathcal{U}(1,\,3)\) s</td></tr>
-              <tr><td>Push linear velocity \(v_{xy}\,/\,v_z\)</td><td class="has-text-right">\(\pm0.5\) / \(\pm0.2\) m/s</td></tr>
-              <tr><td>Push angular velocity roll, pitch / yaw</td><td class="has-text-right">\(\pm0.52\) / \(\pm0.78\) rad/s</td></tr>
-              <tr><td>Reset root pose \(x, y\,/\,z\)</td><td class="has-text-right">\(\pm0.05\) / \(\pm0.01\) m</td></tr>
-              <tr><td>Reset root orientation roll, pitch / yaw</td><td class="has-text-right">\(\pm0.1\) / \(\pm0.2\) rad</td></tr>
-              <tr><td>Reset joint positions</td><td class="has-text-right">\(\pm0.1\) rad</td></tr>
+              <tr><td>Contact spheres per foot</td><td class="has-text-right">8</td></tr>
+              <tr><td>Physics substeps per control step \(S\)</td><td class="has-text-right"><span class="tbd">TBD</span></td></tr>
+              <tr><td>Simulation timestep</td><td class="has-text-right"><span class="tbd">TBD</span></td></tr>
+              <tr><td>Control frequency</td><td class="has-text-right"><span class="tbd">TBD</span></td></tr>
+              <tr><td>Transfer simulator (sim-to-sim)</td><td class="has-text-right">MuJoCo</td></tr>
             </tbody>
           </table>
         </div>
       </div>
 
       <div class="column">
-        <h3 class="title is-5">Task and hardware</h3>
+        <h3 class="title is-5">Policy optimization (SHAC + ADD)</h3>
         <div class="table-container">
           <table class="table is-fullwidth params-table">
             <tbody>
-              <tr><td>Robot</td><td class="has-text-right">Unitree G1 humanoid (29 DoF)</td></tr>
+              <tr><td>Differentiable rollout horizon \(N\)</td><td class="has-text-right">32 control steps</td></tr>
+              <tr><td>Parallel environments (SHAC+BCG)</td><td class="has-text-right">64</td></tr>
+              <tr><td>Parallel environments (PPO baseline)</td><td class="has-text-right">128</td></tr>
+              <tr><td>Discount factor \(\gamma\)</td><td class="has-text-right"><span class="tbd">TBD</span></td></tr>
+              <tr><td>Policy learning rate</td><td class="has-text-right"><span class="tbd">TBD</span></td></tr>
+              <tr><td>Critic learning rate</td><td class="has-text-right"><span class="tbd">TBD</span></td></tr>
+              <tr><td>Discriminator learning rate</td><td class="has-text-right"><span class="tbd">TBD</span></td></tr>
+              <tr><td>Policy / critic architecture</td><td class="has-text-right"><span class="tbd">TBD</span></td></tr>
+              <tr><td>Training iterations</td><td class="has-text-right"><span class="tbd">TBD</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="title is-5 mt-5">Task and hardware</h3>
+        <div class="table-container">
+          <table class="table is-fullwidth params-table">
+            <tbody>
+              <tr><td>Robot</td><td class="has-text-right">Unitree G1 humanoid</td></tr>
               <tr><td>Reference motions</td><td class="has-text-right">LAFAN1: Run, Jump, Fight, Dance</td></tr>
               <tr><td>Imitation reward</td><td class="has-text-right">ADD</td></tr>
-              <tr><td>Discriminator learning rate</td><td class="has-text-right">\(2.5\times10^{-4}\)</td></tr>
-              <tr><td>Action-rate penalty weight</td><td class="has-text-right">\(-0.8\)</td></tr>
-              <tr><td>Reference state initialization</td><td class="has-text-right">random motion phase</td></tr>
               <tr><td>Fall threshold (root height)</td><td class="has-text-right">0.3 m</td></tr>
               <tr><td>Training GPU</td><td class="has-text-right">NVIDIA RTX 2080 Ti</td></tr>
               <tr><td>Evaluation runs per setting</td><td class="has-text-right">5</td></tr>
