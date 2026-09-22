@@ -9,7 +9,7 @@ is in the film -- edit `timeline.py` and both follow.
     python3 tools/build_site_media.py             # everything
     python3 tools/build_site_media.py hero grad    # only those groups
 
-Groups: hero, deploy, sim2sim, grad, stills, pipeline, mainfig
+Groups: hero, deploy, sim2sim, compare, grad, stills, pipeline, mainfig
 """
 import os
 import re
@@ -24,6 +24,8 @@ SITE = os.path.dirname(HERE)
 VIDEOS = os.path.normpath(os.path.join(SITE, "..", "Videos"))
 BUILD = os.path.join(VIDEOS, "build")
 PAPER = os.path.normpath(os.path.join(SITE, ".."))
+RESULTS = os.path.normpath(os.path.join(
+    SITE, "..", "..", "rsl", "diffsimrl", "experiment_results"))
 
 VID_OUT = os.path.join(SITE, "static", "videos")
 IMG_OUT = os.path.join(SITE, "static", "images")
@@ -135,6 +137,23 @@ def g_sim2sim():
                 height=540, crf=28)
 
 
+# motion -> (SHAC-Stiff + BCG run, PPO run), folders under RESULTS
+COMPARE = {
+    "jump":  ("sim2sim_rsi_jumps21_nocap", "sim2sim_rsi_jumps_ppo_nocap"),
+    "run":   ("run6_shac-stiff-bcg", "run6_ppo"),
+    "fight": ("fight9_shac-stiff-bcg", "fight9_ppo"),
+    "dance": ("dance15s3_shac-stiff-bcg", "dance15s3_ppo"),
+}
+
+
+def g_compare():
+    """Sim-to-sim in MuJoCo, SHAC-Stiff + BCG next to PPO for each motion."""
+    for name, (bcg, ppo) in COMPARE.items():
+        for tag, run in (("bcg", bcg), ("ppo", ppo)):
+            web(os.path.join(RESULTS, run, "sim2sim.mp4"),
+                f"compare_{name}_{tag}.mp4", height=540, crf=28)
+
+
 def g_grad():
     """The three gradient visualisations: forward rollout, then the backward
     pass sweeping back through the same rollout."""
@@ -196,7 +215,8 @@ def g_mainfig():
     print(f"  main_fig.png  {img.size}")
 
 
-GROUPS = dict(hero=g_hero, deploy=g_deploy, sim2sim=g_sim2sim, grad=g_grad,
+GROUPS = dict(hero=g_hero, deploy=g_deploy, sim2sim=g_sim2sim,
+              compare=g_compare, grad=g_grad,
               stills=g_stills, pipeline=g_pipeline, mainfig=g_mainfig)
 
 
