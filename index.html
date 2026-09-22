@@ -621,72 +621,50 @@
     <h2 class="title is-3">Limitations</h2>
 
     <div class="limitation">
-      <h3 class="title is-5">Training is slow in absolute terms</h3>
+      <h3 class="title is-5">Training remains computationally expensive</h3>
       <div class="content has-text-justified">
         <p>
-          The sample efficiency reported above is measured in environment samples, not in
-          wall-clock time, and the two are not interchangeable here. Each of our simulation
-          substeps solves a linear complementarity problem for the contact set &mdash; eight
-          contact spheres attached to the feet &mdash; and that solve, rather than the policy
-          update, is what dominates the cost of a step. Both PPO and SHAC pay it, so both are
-          slower per sample than they would be in a simulator with a cheaper contact model. BCG
-          reduces how many samples are needed, but it does not make an individual step cheaper.
+          Our contact model solves an LCP over eight contact spheres, with four spheres
+          on each foot. This makes each simulation step relatively expensive, so training
+          remains slow in absolute wall-clock time despite the sample efficiency of
+          first-order learning.
         </p>
       </div>
     </div>
 
     <div class="limitation">
-      <h3 class="title is-5">Bundling adds computation and memory</h3>
+      <h3 class="title is-5">Bundling parameters require tuning</h3>
       <div class="content has-text-justified">
         <p>
-          Each bundle simulates and differentiates through \(B\) additional branches. Because
-          bundling is contact-local &mdash; triggered only when a contact impulse exceeds
-          \(\tau\) &mdash; this cost is confined to stiff contact events rather than paid at
-          every step. That limit is what makes the method practical, but it also means the
-          overhead scales with how much of a motion is spent in stiff contact: a task with
-          sustained contact can end up more expensive than PPO on the same hardware.
+          BCG introduces several parameters, including the perturbation scales
+          \(\sigma_p\) and \(\sigma_v\), bundle size \(B\), and bundle horizon \(H\).
+          These control the amount of smoothing and the computational cost, and currently
+          require manual tuning. Automatically adapting them based on local contact
+          sensitivity is an important direction for future work.
         </p>
       </div>
     </div>
 
     <div class="limitation">
-      <h3 class="title is-5">The smoothing parameters have to be tuned</h3>
+      <h3 class="title is-5">Bundling increases compute and memory usage</h3>
       <div class="content has-text-justified">
         <p>
-          The perturbation scales \(\sigma_p, \sigma_v\), the number of branches \(B\) and the
-          horizon \(H\) trade three things against each other: how much the gradient is smoothed,
-          how much bias the averaging introduces relative to the true stiff-contact derivative,
-          and how much compute the bundle costs. We set them per robot rather than per motion,
-          but they are not derived from anything &mdash; a scale that is too small leaves the
-          variance in place, and one that is too large averages over contact configurations that
-          are no longer representative of the state the rollout is actually in. Choosing them
-          automatically from the local contact sensitivity is the obvious next step.
+          At stiff contacts, BCG simulates and differentiates through multiple perturbed
+          branches, increasing both computation and memory requirements. In our experiments,
+          we partly offset this cost by training with fewer parallel environments, but the
+          additional overhead remains an important consideration for larger-scale tasks.
         </p>
       </div>
     </div>
 
     <div class="limitation">
-      <h3 class="title is-5">Demonstrated on locomotion-scale contact only</h3>
+      <h3 class="title is-5">Evaluation is limited to motion tracking</h3>
       <div class="content has-text-justified">
         <p>
-          Every result here involves a humanoid whose stiff contacts are made by two feet against
-          flat ground. We have not shown that the same treatment holds where contact is richer and
-          less predictable &mdash; loco-manipulation, or dexterous manipulation, where many
-          contacts open and close at once and the contacting bodies are much lighter relative to
-          the forces involved. Whether one bundle per contact event remains the right granularity
-          in that setting is untested.
-        </p>
-      </div>
-    </div>
-
-    <div class="limitation">
-      <h3 class="title is-5">Stiff, not rigid</h3>
-      <div class="content has-text-justified">
-        <p>
-          Throughout this work <i>stiff contact</i> means a large but finite \(\kappa\), which is
-          what keeps the dynamics differentiable in the first place. The transfer results show
-          that \(\kappa=300\) is high enough for these motions on this robot, not that the
-          remaining gap to truly rigid contact is negligible in general.
+          We evaluate BCG on humanoid motion-tracking tasks where the dominant contacts
+          occur between the feet and the ground. It remains to be seen how the method
+          behaves in more complex contact-rich settings, such as humanoid loco-manipulation
+          or dexterous manipulation.
         </p>
       </div>
     </div>
