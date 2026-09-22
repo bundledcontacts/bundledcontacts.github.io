@@ -234,7 +234,8 @@
 
     <div class="content has-text-justified">
       <p>
-        The simulator uses an analytically smoothed compliant contact model, in which contact
+        The simulator uses the analytically smoothed compliant contact model of
+        <a class="cite" href="#ref-schwarke2025">Schwarke et al. (2025)</a>, in which contact
         impulses are scaled by penetration depth \(d\) through
         \(s_\kappa(d) = \bigl(1+\exp(-\kappa d)\bigr)^{-1}\). The stiffness \(\kappa\) sets how
         closely the model approaches hard contact.
@@ -615,7 +616,7 @@
     <div class="content has-text-justified">
       <p>
         Both policies replayed side by side in MuJoCo. PPO is sometimes susceptible to getting
-        stuck in local minima: on Jump, below, its feet never lift off the ground.
+        stuck in local minima: on Jump, below, the foot that is supposed to be lifted, drags along the ground.
       </p>
     </div>
     <div class="columns is-multiline">
@@ -682,8 +683,9 @@
       <h3 class="title is-5">Training remains computationally expensive</h3>
       <div class="content has-text-justified">
         <p>
-          The contact model we use is suited for differentiable simulation but it 
-          solves an LCP over eight contact spheres, with four spheres
+          The contact model we use
+          <a class="cite" href="#ref-schwarke2025">(Schwarke et al., 2025)</a> is suited for
+          differentiable simulation, but it solves an LCP over eight contact spheres, with four spheres
           on each foot. This makes each simulation step relatively expensive, so training
           remains slow in absolute wall-clock time despite the sample efficiency of
           first-order learning.
@@ -813,9 +815,7 @@
               <tr><td>Velocity perturbation scale \(\sigma_v\)</td><td class="has-text-right">2 cm/s</td></tr>
               <tr><td>Contact detection threshold \(\tau\)</td><td class="has-text-right">400 N</td></tr>
               <tr><td>Aggregation \(\mathcal{A}\)</td><td class="has-text-right">arithmetic mean</td></tr>
-              <tr><td>Perturbation groups</td><td class="has-text-right">per foot, \(\delta\mathbf{x} \in \mathbb{R}^{3}\)</td></tr>
               <tr><td>Jacobian pseudoinverse damping \(\lambda_J\)</td><td class="has-text-right">\(10^{-4}\)</td></tr>
-              <tr><td>Joint-space clamp \(|\delta q|\,/\,|\delta\dot q|\)</td><td class="has-text-right">0.1 rad / 0.5 rad/s</td></tr>
             </tbody>
           </table>
         </div>
@@ -834,9 +834,6 @@
               <tr><td>Control step \(\Delta t\)</td><td class="has-text-right">0.02 s (50 Hz)</td></tr>
               <tr><td>Physics substeps per control step \(S\)</td><td class="has-text-right">4</td></tr>
               <tr><td>Physics step \(\Delta t / S\)</td><td class="has-text-right">0.005 s (200 Hz)</td></tr>
-              <tr><td>Episode length</td><td class="has-text-right">20 s (1000 control steps)</td></tr>
-              <tr><td>Action scale \(\alpha\)</td><td class="has-text-right">\(\mathbf{q}^{*} = \mathbf{q}_0 + 0.4\,\mathbf{a}\)</td></tr>
-              <tr><td>Transfer simulator (sim-to-sim)</td><td class="has-text-right">MuJoCo, 0.002 s step</td></tr>
             </tbody>
           </table>
         </div>
@@ -924,6 +921,22 @@
   </div>
 </section>
 <!--/ Training parameters. -->
+
+
+<!-- ========================================================== References. -->
+<section class="section" id="references">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">References</h2>
+    <ol class="references">
+      <li id="ref-schwarke2025">
+        C. Schwarke, V. Klemm, J. Bagajo, J.-P. Sleiman, I. Georgiev, J. Tordesillas and
+        M. Hutter. <i>Learning Deployable Locomotion Control via Differentiable Simulation.</i>
+        Conference on Robot Learning (CoRL), 2025.
+      </li>
+    </ol>
+  </div>
+</section>
+<!--/ References. -->
 
 
 <section class="section" id="BibTeX">

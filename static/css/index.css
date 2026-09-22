@@ -498,3 +498,28 @@ mjx-container[display="true"] {
   .media-placeholder .ph-title { font-size: 0.85rem; }
   .method-steps .step-card { margin-bottom: 1rem; }
 }
+
+
+/* --- Citations -------------------------------------------------------------- */
+
+a.cite {
+  white-space: nowrap;
+}
+
+.references {
+  list-style: none;
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #3a3f45;
+}
+
+.references li {
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  scroll-margin-top: 1rem;
+}
+
+.references li:target {
+  background: #fff6d6;
+}
