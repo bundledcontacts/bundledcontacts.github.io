@@ -523,3 +523,99 @@ a.cite {
 .references li:target {
   background: #fff6d6;
 }
+
+
+/* --- Contact-scaling plot (Method overview) --------------------------------- */
+
+.contact-plot {
+  --cp-k50: #6da7ec;
+  --cp-k100: #256abf;
+  --cp-k300: #0d366b;
+  max-width: 560px;
+  margin: 0.5rem auto 2.5rem;
+}
+
+.contact-plot-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem 1.25rem;
+  font-size: 0.85rem;
+  color: var(--bcg-ink);
+  margin-bottom: 0.25rem;
+}
+
+.contact-plot-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.cp-swatch {
+  display: inline-block;
+  width: 18px;
+  height: 2px;
+  border-radius: 1px;
+}
+.cp-swatch.cp-k50  { background: var(--cp-k50); }
+.cp-swatch.cp-k100 { background: var(--cp-k100); }
+.cp-swatch.cp-k300 { background: var(--cp-k300); }
+
+.contact-plot-frame {
+  position: relative;
+}
+
+.contact-plot-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  font-family: 'Noto Sans', sans-serif;
+}
+
+.cp-grid    { stroke: #e6e8ec; stroke-width: 1; }
+.cp-axis    { stroke: #b9bec6; stroke-width: 1; }
+.cp-contact { stroke: #b9bec6; stroke-width: 1; stroke-dasharray: 3 4; }
+.cp-tick    { font-size: 13px; fill: var(--bcg-muted); }
+.cp-label   { font-size: 14px; fill: #5a6068; }
+.cp-region  { font-size: 13px; fill: var(--bcg-muted); font-style: italic; }
+
+.cp-line {
+  fill: none;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.cp-line.cp-k50  { stroke: var(--cp-k50); }
+.cp-line.cp-k100 { stroke: var(--cp-k100); }
+.cp-line.cp-k300 { stroke: var(--cp-k300); }
+
+.cp-hover { visibility: hidden; pointer-events: none; }
+.contact-plot.is-hovering .cp-hover { visibility: visible; }
+.cp-cross { stroke: #9aa1ab; stroke-width: 1; }
+.cp-dot { stroke: #fafbfc; stroke-width: 2; }
+.cp-dot.cp-k50  { fill: var(--cp-k50); }
+.cp-dot.cp-k100 { fill: var(--cp-k100); }
+.cp-dot.cp-k300 { fill: var(--cp-k300); }
+.cp-hit { cursor: crosshair; }
+
+.contact-plot-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--bcg-ink);
+  background: #fff;
+  border: 1px solid #e3e6ea;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  pointer-events: none;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.contact-plot.is-hovering .contact-plot-tip { display: block; }
+.contact-plot-tip .cp-row { display: flex; align-items: center; gap: 0.4rem; }
+.contact-plot-tip .cp-row b { margin-left: auto; padding-left: 0.75rem; font-weight: 600; }
