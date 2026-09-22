@@ -578,7 +578,6 @@ a.cite {
 .cp-contact { stroke: #b9bec6; stroke-width: 1; stroke-dasharray: 3 4; }
 .cp-tick    { font-size: 13px; fill: var(--bcg-muted); }
 .cp-label   { font-size: 14px; fill: #5a6068; }
-.cp-region  { font-size: 13px; fill: var(--bcg-muted); font-style: italic; }
 
 .cp-line {
   fill: none;

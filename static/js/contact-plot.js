@@ -18,7 +18,7 @@
   var W = +ds.width, H = +ds.height;
   var kappas = [50, 100, 300];
 
-  function s(k, dCm) { return 1 / (1 + Math.exp(-k * dCm / 100)); }
+  function s(k, dMm) { return 1 / (1 + Math.exp(-k * dMm / 1000)); }
   function xOf(d) { return L + (d - x0) / (x1 - x0) * (W - L - R); }
   function yOf(v) { return T + (1 - v) * (H - T - B); }
 
@@ -32,7 +32,7 @@
 
     cross.setAttribute('x1', x);
     cross.setAttribute('x2', x);
-    var rows = ['<div>d = ' + d.toFixed(1) + ' cm</div>'];
+    var rows = ['<div>d = ' + d.toFixed(0) + ' mm</div>'];
     kappas.forEach(function (k, i) {
       var v = s(k, d);
       dots[i].setAttribute('cx', x);
