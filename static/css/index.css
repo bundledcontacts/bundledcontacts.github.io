@@ -181,35 +181,23 @@ body {
   width: fit-content;
 }
 
-/* The logo files are dark ink on opaque white, so over the hero video they get
-   a light plate to sit on.  A rounded rectangle rather than a pill, because the
-   row wraps to two lines on a phone. */
-.project-hero .publication-logos {
-  background: rgba(255, 255, 255, 0.93);
-  border-radius: 14px;
-  padding: 0.7rem 1.5rem;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
-}
-
+/* tools/build_logos.py trims each file tight to its ink, so one shared height
+   is enough to put all four on the same optical height. */
 .publication-logos img {
   display: block;
   width: auto;
+  height: 38px;
 }
 
-/* Heights are set per logo, not shared, so the four read as the same visual
-   weight despite very different aspect ratios and amounts of internal padding. */
-.logo-usc    { height: 30px; }
-.logo-eth    { height: 24px; }
-.logo-nvidia { height: 36px; }
-.logo-zhaw   { height: 34px; }
+/* The logos are white ink on transparency, matching the hero's white text, so
+   they get the same shadow that keeps that text legible over a bright frame. */
+.project-hero .publication-logos img {
+  filter: drop-shadow(0 1px 8px rgba(0, 0, 0, 0.9));
+}
 
 @media screen and (max-width: 768px) {
-  .publication-logos { gap: 0.8rem 1.4rem; }
-  .project-hero .publication-logos { padding: 0.6rem 1.1rem; }
-  .logo-usc    { height: 24px; }
-  .logo-eth    { height: 19px; }
-  .logo-nvidia { height: 29px; }
-  .logo-zhaw   { height: 27px; }
+  .publication-logos { gap: 0.8rem 1.6rem; }
+  .publication-logos img { height: 28px; }
 }
 
 /* The author-line swap toggles [hidden]; make sure nothing overrides it. */
