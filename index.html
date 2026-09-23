@@ -732,8 +732,9 @@
     <h3 class="title is-5 mt-6">Sim-to-Sim: transfer to MuJoCo, Comparison with PPO</h3>
     <div class="content has-text-justified">
       <p>
-        Both policies replayed side by side in MuJoCo. PPO is sometimes susceptible to getting
-        stuck in local minima: on Jump, below, the foot that is supposed to be lifted, drags along the ground.
+        Both policies replayed side by side in MuJoCo. PPO combined with ADD is sometimes susceptible to getting
+        stuck in local minima: on Jump, below, the foot that is supposed to be lifted, drags along the ground. This also shows how
+        first-order learning might pair better with ADD than PPO.
       </p>
     </div>
     <div class="columns is-multiline">
