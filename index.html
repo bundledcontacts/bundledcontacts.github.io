@@ -114,15 +114,15 @@
             <span class="author-block">
               <a href="https://jin-cheng.me/">Jin Cheng</a><sup>2</sup>,&nbsp;</span>
             <span class="author-block">
-              <a href="https://linkedin.com/in/clemensschwarke">Clemens Schwarke</a><sup>2,3</sup></span>
+              <a href="https://linkedin.com/in/clemensschwarke">Clemens Schwarke</a><sup>2,3</sup>,&nbsp;</span>
             <span class="author-block">
-              <a href="https://viterbi.usc.edu/directory/faculty/Nguyen/Quan">Quan Nguyen</a><sup>1</sup></span>
+              <a href="https://viterbi.usc.edu/directory/faculty/Nguyen/Quan">Quan Nguyen</a><sup>1</sup>,&nbsp;</span>
             <span class="author-block">
-              <a href="https://viterbi.usc.edu/directory/faculty/Sukhatme/Gaurav">Gaurav Sukhatme</a><sup>1</sup></span>
+              <a href="https://viterbi.usc.edu/directory/faculty/Sukhatme/Gaurav">Gaurav Sukhatme</a><sup>1</sup>,&nbsp;</span>
             <span class="author-block">
-              <a href="https://rsl.ethz.ch/the-lab/people/person-detail.hutter.html">Marco Hutter</a><sup>2</sup></span>
+              <a href="https://rsl.ethz.ch/the-lab/people/person-detail.hutter.html">Marco Hutter</a><sup>2</sup>,&nbsp;</span>
             <span class="author-block">
-              <a href="https://crl.ethz.ch/people/coros/index.html">Stelian Coros</a><sup>2</sup></span>
+              <a href="https://crl.ethz.ch/people/coros/index.html">Stelian Coros</a><sup>2</sup>,&nbsp;</span>
             <span class="author-block">
               <a href="https://www.linkedin.com/in/gabriele-fadini-643b71180/">Gabriele Fadini</a><sup>4</sup></span>
           </div>
@@ -134,7 +134,21 @@
             <span class="affiliation-block"><sup>4</sup>Zurich University of Applied Sciences</span>
           </div>
 
-          <div class="is-size-6 publication-venue-line">
+          <!-- Institution logos, in the same order as the affiliation numbers above.
+               The sources are dark ink on opaque white, so the CSS puts a light plate
+               behind the row to keep them legible over the hero video. -->
+          <div class="publication-logos" id="authors-logos" hidden>
+            <img class="logo-usc" src="./static/images/logos/usc.png"
+                 alt="University of Southern California">
+            <img class="logo-eth" src="./static/images/logos/eth.png"
+                 alt="ETH Zürich">
+            <img class="logo-nvidia" src="./static/images/logos/nvidia.png"
+                 alt="NVIDIA">
+            <img class="logo-zhaw" src="./static/images/logos/zhaw.png"
+                 alt="Zurich University of Applied Sciences">
+          </div>
+
+          <div class="is-size-6 publication-venue-line" id="publication-venue-line">
             <span class="publication-venue">Under review</span>
           </div>
 
@@ -145,6 +159,9 @@
               document.getElementById('authors-anon').hidden = true;
               document.getElementById('authors-named').hidden = false;
               document.getElementById('authors-affiliations').hidden = false;
+              document.getElementById('authors-logos').hidden = false;
+              /* "Under review" is for the reviewers' copy only. */
+              document.getElementById('publication-venue-line').hidden = true;
             })();
           </script>
 
