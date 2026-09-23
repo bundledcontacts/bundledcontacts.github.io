@@ -95,6 +95,7 @@ body {
 }
 
 .project-hero .publication-authors,
+.project-hero .publication-affiliations,
 .project-hero .publication-venue {
   color: rgba(255, 255, 255, 0.92);
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
@@ -152,6 +153,25 @@ body {
 
 .author-block {
   display: inline-block;
+}
+
+/* Shown only on ?authors, alongside the named author line. */
+.publication-affiliations {
+  font-family: 'Google Sans', sans-serif;
+  margin-top: 0.35rem;
+}
+
+.affiliation-block {
+  display: inline-block;
+}
+
+.affiliation-block + .affiliation-block {
+  margin-left: 0.9rem;
+}
+
+/* The author-line swap toggles [hidden]; make sure nothing overrides it. */
+[hidden] {
+  display: none !important;
 }
 
 .publication-venue-line {

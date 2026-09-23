@@ -91,13 +91,50 @@
             Stabilizing Differentiable Simulation for Deployable Dynamic Tasks
           </h2>
 
-          <div class="is-size-5 publication-authors">
+          <!-- Author line.  Both versions live in the page and the script just below
+               picks one from the URL:
+
+                 https://bundledcontacts.github.io/           ->  Anonymous Authors
+                 https://bundledcontacts.github.io/?authors   ->  real names
+
+               Put the bare URL in the paper (that is what reviewers land on) and the
+               ?authors one wherever the page is shared publicly.  The names are in the
+               page source either way; what ICRA's double-blind rules care about is the
+               page a reviewer is sent to, and that one stays anonymous. -->
+          <div class="is-size-5 publication-authors" id="authors-anon">
             <span class="author-block">Anonymous Authors</span>
+          </div>
+
+          <div class="is-size-5 publication-authors" id="authors-named" hidden>
+            <!-- TODO: real author list.  Drop the <a> wrapper for anyone without a
+                 homepage, and keep the <sup> numbers in sync with the affiliations
+                 below.  Separators live inside each block so the line wraps cleanly. -->
+            <span class="author-block">
+              <a href="https://dyumanaditya.github.io/">Dyuman Aditya</a><sup>1</sup>,&nbsp;</span>
+            <span class="author-block">
+              <a href="https://jin-cheng.me/">Jin Cheng</a><sup>1</sup>,&nbsp;</span>
+            <span class="author-block">
+              <a href="https://linkedin.com/in/clemensschwarke">Clemens Schwarke</a><sup>2</sup></span>
+          </div>
+
+          <div class="is-size-6 publication-affiliations" id="authors-affiliations" hidden>
+            <span class="affiliation-block"><sup>1</sup>ETH Zürich</span>
+            <span class="affiliation-block"><sup>2</sup>Second Affiliation</span>
           </div>
 
           <div class="is-size-6 publication-venue-line">
             <span class="publication-venue">Under review</span>
           </div>
+
+          <script>
+            /* Runs inline, before the hero paints, so neither version flashes. */
+            (function () {
+              if (!/(^|[?&])authors(=|&|$)/.test(window.location.search)) return;
+              document.getElementById('authors-anon').hidden = true;
+              document.getElementById('authors-named').hidden = false;
+              document.getElementById('authors-affiliations').hidden = false;
+            })();
+          </script>
 
           <div class="column has-text-centered">
             <div class="publication-links">
