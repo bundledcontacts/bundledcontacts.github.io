@@ -95,7 +95,6 @@ body {
 }
 
 .project-hero .publication-authors,
-.project-hero .publication-affiliations,
 .project-hero .publication-venue {
   color: rgba(255, 255, 255, 0.92);
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
@@ -153,63 +152,6 @@ body {
 
 .author-block {
   display: inline-block;
-}
-
-/* Shown only on ?authors, alongside the named author line. */
-.publication-affiliations {
-  font-family: 'Google Sans', sans-serif;
-  margin-top: 0.35rem;
-}
-
-.affiliation-block {
-  display: inline-block;
-}
-
-.affiliation-block + .affiliation-block {
-  margin-left: 0.9rem;
-}
-
-/* Institution logos, shown only on ?authors. ------------------------------- */
-
-.publication-logos {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.9rem 2rem;
-  margin: 1.1rem auto 0;
-  width: fit-content;
-}
-
-/* tools/build_logos.py trims each file tight to its ink, so one shared height
-   is enough to put all four on the same optical height. */
-.publication-logos img {
-  display: block;
-  width: auto;
-  height: 38px;
-}
-
-/* ETH is a single-line wordmark where the others are stacked lockups or a mark,
-   so at a shared height it reads heavier than the rest; nudge it down. */
-.logo-eth {
-  height: 33px;
-}
-
-/* The logos are white ink on transparency, matching the hero's white text, so
-   they get the same shadow that keeps that text legible over a bright frame. */
-.project-hero .publication-logos img {
-  filter: drop-shadow(0 1px 8px rgba(0, 0, 0, 0.9));
-}
-
-@media screen and (max-width: 768px) {
-  .publication-logos { gap: 0.8rem 1.6rem; }
-  .publication-logos img { height: 28px; }
-  .logo-eth { height: 24px; }
-}
-
-/* The author-line swap toggles [hidden]; make sure nothing overrides it. */
-[hidden] {
-  display: none !important;
 }
 
 .publication-venue-line {

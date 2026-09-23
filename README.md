@@ -5,8 +5,11 @@ Source for <https://bundledcontacts.github.io>, the project page for
 > **Bundled Contact Gradients: Stabilizing Differentiable Simulation for Deployable Dynamic Tasks**
 > Anonymous Authors — under double-blind review
 
-The page is intentionally anonymous: no author names, affiliations, personal links,
-analytics, or code/arXiv URLs. Keep it that way until the review process is over.
+The page is intentionally anonymous: no author names, affiliations, institution logos,
+personal links, analytics, or code/arXiv URLs anywhere in the repo, not just on the
+rendered page. Keep it that way until the review process is over — this is the URL the
+submitted paper points at. The named version of the page is maintained in a separate
+repository and must not be linked from here.
 
 ## Filling in the results
 
